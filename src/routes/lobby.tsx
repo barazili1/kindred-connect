@@ -193,11 +193,19 @@ function Lobby() {
             </div>
 
             <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-              {visible.map((game, i) => (
+              {visible.map((game, i) => {
+                const level = luckMap[game.name]?.level;
+                return (
                 <button
                   key={game.name}
                   type="button"
-                  className="group relative overflow-hidden rounded-2xl border border-border text-left backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-primary hover:shadow-[0_0_30px_oklch(0.66_0.26_300/0.4)]"
+                  className={`group relative overflow-hidden rounded-2xl border text-left backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 ${
+                    level === "hot"
+                      ? "border-accent/70 shadow-[0_0_26px_oklch(0.8_0.18_180/0.45)] hover:border-accent hover:shadow-[0_0_38px_oklch(0.8_0.18_180/0.65)]"
+                      : level === "stable"
+                        ? "border-primary/50 hover:border-primary hover:shadow-[0_0_30px_oklch(0.66_0.26_300/0.45)]"
+                        : "border-border hover:border-primary hover:shadow-[0_0_30px_oklch(0.66_0.26_300/0.4)]"
+                  }`}
                 >
                   <div className="relative overflow-hidden">
                     <img
@@ -239,7 +247,8 @@ function Lobby() {
                     </span>
                   </span>
                 </button>
-              ))}
+                );
+              })}
             </div>
 
             {visible.length === 0 && (
@@ -290,7 +299,7 @@ function LuckBadge({ info }: { info: LuckInfo }) {
           <path d="M12 4v15m0 0 6-6m-6 6-6-6" />
         </svg>
       )}
-      {info.luck}%
+      {hot ? `Recommended ${info.luck}%` : stable ? "Stable" : `${info.luck}%`}
     </span>
   );
 }
