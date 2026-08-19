@@ -179,6 +179,30 @@ export function buildPrediction(kind: PredictionKind): Prediction {
       return { kind: "goal", pick: Math.floor(rnd(0, 3)), corners: Math.round(rnd(2, 4)) };
     case "wheel":
       return { kind: "wheel", segment: `x${Math.round(rnd(2, 40))}` };
+    case "none":
+      return { kind: "none" };
+    case "cashout": {
+      const count = Math.floor(rnd(1, 4)); // 1 – 3 خانات عشوائية
+      const steps: { step: number; multiplier: string }[] = [];
+      let step = Math.floor(rnd(2, 5));
+      let m = rnd(1.3, 2.1);
+      for (let i = 0; i < count; i++) {
+        steps.push({ step, multiplier: `x${m.toFixed(2)}` });
+        step += Math.floor(rnd(2, 5));
+        m *= rnd(1.4, 2.3);
+      }
+      return { kind: "cashout", steps };
+    }
+    case "eastern": {
+      const cols = 5;
+      let m = rnd(1.15, 1.35);
+      const rows = Array.from({ length: 10 }, () => {
+        const row = { multiplier: `x${m.toFixed(2)}`, safe: Math.floor(rnd(0, cols)) };
+        m *= rnd(1.25, 1.6);
+        return row;
+      }).reverse();
+      return { kind: "eastern", rows, cols };
+    }
     case "swamp": {
       const cols = 5;
       const mults = [27.16, 5.43, 2.17, 1.3];
