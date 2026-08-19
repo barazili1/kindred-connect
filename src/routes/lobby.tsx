@@ -190,7 +190,7 @@ function Lobby() {
               <div className="flex items-center gap-2">
                 <span className="h-4 w-1 rounded-full bg-gradient-to-b from-accent to-primary" />
                 <h2 className="text-sm font-bold uppercase tracking-widest text-foreground">
-                  {tabs.find((t) => t.id === tab)?.label}
+                  {filters.find((f) => f.id === filter)?.label}
                 </h2>
               </div>
               <span className="text-xs text-muted-foreground">{visible.length} games</span>
