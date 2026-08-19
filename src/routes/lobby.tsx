@@ -83,7 +83,9 @@ function Lobby() {
     const byLuck =
       filter === "all"
         ? games
-        : games.filter((g) => luckMap[g.name]?.level === filter);
+        : filter === "instant"
+          ? games.filter((g) => g.category === "instant")
+          : games.filter((g) => luckMap[g.name]?.level === filter);
     const q = query.trim().toLowerCase();
     return q ? byLuck.filter((g) => g.name.toLowerCase().includes(q)) : byLuck;
   }, [filter, query, luckMap]);
