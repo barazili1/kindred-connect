@@ -113,8 +113,12 @@ const kindByName: Record<string, PredictionKind> = {
   "Gems & Mines": "mines",
   "Goal!": "goal",
   Goal: "goal",
-  "Swamp Land": "swamp",
-  Crystal: "gems",
+  "Swamp Land": "cashout",
+  "Eastern Nights": "eastern",
+  Crystal: "none",
+  "Vampire Curse": "none",
+  "777": "none",
+  "Burning Hot": "none",
 };
 
 export function getKind(name: string): PredictionKind {
@@ -132,6 +136,9 @@ export type Prediction =
   | { kind: "goal"; pick: number; corners: number }
   | { kind: "slot"; reels: string[][]; spins: number; payline: number }
   | { kind: "wheel"; segment: string }
+  | { kind: "cashout"; steps: { step: number; multiplier: string }[] }
+  | { kind: "eastern"; rows: { multiplier: string; safe: number }[]; cols: number }
+  | { kind: "none" }
   | { kind: "swamp"; rows: { multiplier: string; safe: number }[]; cols: number }
   | { kind: "gems"; grid: string[]; cluster: number[]; cols: number };
 
