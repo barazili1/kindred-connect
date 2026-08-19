@@ -48,7 +48,33 @@ function Lobby() {
     return () => window.clearInterval(id);
   }, []);
 
-  const featured = useMemo(() => games.slice(0, 8), []);
+  // Luck rotation (client-only to keep SSR markup stable)
+  const [slot, setSlot] = useState<{ index: number; endsAt: number } | null>(null);
+
+  useEffect(() => {
+    let timer: number;
+    const tick = () => {
+      const s = getLuckSlot(Date.now());
+      setSlot({ index: s.index, endsAt: s.endsAt });
+      timer = window.setTimeout(tick, Math.max(1000, s.endsAt - Date.now()));
+    };
+    tick();
+    return () => window.clearTimeout(timer);
+  }, []);
+
+  const luckMap = useMemo(
+    () => (slot ? getLuckMap(slot.index) : ({} as Record<string, LuckInfo>)),
+    [slot],
+  );
+
+  const hotGames = useMemo(
+    () => games.filter((g) => luckMap[g.name]?.level === "hot"),
+    [luckMap],
+  );
+  const stableGames = useMemo(
+    () => games.filter((g) => luckMap[g.name]?.level === "stable"),
+    [luckMap],
+  );
 
   const visible = useMemo(() => {
     const byTab = tab === "all" ? games : games.filter((g) => g.category === tab);
