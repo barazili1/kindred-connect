@@ -322,7 +322,7 @@ function CardShell({
   className,
   children,
 }: {
-  slug?: string;
+  slug?: string | undefined;
   className: string;
   children: React.ReactNode;
 }) {
