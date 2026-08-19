@@ -240,13 +240,13 @@ export function buildEnterDelayMs() {
   return Math.round(rnd(60_000, 300_000));
 }
 
-/** Exact entry time in 12-hour format, e.g. "7:43:20 PM". */
+/** Exact entry time in 12-hour Hours:Minutes format, e.g. "7:43 PM". */
 export function formatEnterTime(ts: number) {
   const d = new Date(ts);
   let h = d.getHours();
   const ampm = h >= 12 ? "PM" : "AM";
   h = h % 12 || 12;
   const mm = String(d.getMinutes()).padStart(2, "0");
-  const ss = String(d.getSeconds()).padStart(2, "0");
-  return `${h}:${mm}:${ss} ${ampm}`;
+  return `${h}:${mm} ${ampm}`;
 }
+
