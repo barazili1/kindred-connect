@@ -3,7 +3,8 @@ import { useEffect, useMemo, useState } from "react";
 
 import logo from "@/assets/casino-ai-logo.png";
 import { ParticlesBackground } from "@/components/ParticlesBackground";
-import { games, type GameCategory } from "@/data/games";
+import { games, type Game, type GameCategory } from "@/data/games";
+import { getLuckMap, getLuckSlot, type LuckInfo } from "@/lib/luck";
 
 export const Route = createFileRoute("/lobby")({
   head: () => ({
