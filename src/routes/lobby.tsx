@@ -276,8 +276,8 @@ function Lobby() {
                     </span>
                   </div>
                   <span className="block px-2.5 py-2">
-                    <span className="block truncate text-xs font-semibold text-card-foreground">
-                      {game.name}
+                    <span className="block truncate text-xs font-semibold text-card-foreground" dir="rtl">
+                      {arabicName(game.name)}
                     </span>
                     <span className="mt-1 flex items-center gap-1.5">
                       <span
@@ -480,8 +480,8 @@ function LuckRail({
                   ↑{luck}%
                 </span>
                 <span className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-background via-background/75 to-transparent px-2 pb-1.5 pt-6">
-                  <span className="block truncate text-[11px] font-semibold text-foreground">
-                    {game.name}
+                  <span className="block truncate text-[11px] font-semibold text-foreground" dir="rtl">
+                    {arabicName(game.name)}
                   </span>
                 </span>
               </span>
