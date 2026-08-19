@@ -9,7 +9,86 @@ export type PredictionKind =
   | "slot"
   | "wheel"
   | "swamp"
-  | "gems";
+  | "gems"
+  | "eastern"
+  | "cashout"
+  | "none";
+
+/** Arabic display names. Falls back to the original name when unmapped. */
+const arabicNames: Record<string, string> = {
+  Aviator: "أفياتور",
+  Spaceman: "سبيس مان",
+  "Penalty Shoot-Out Street": "ضربات الجزاء",
+  "Doodle Crash": "دودل كراش",
+  Zeppelin: "زبلن",
+  "To Mars and Beyond": "إلى المريخ وما بعده",
+  "Cricket Crash": "كريكيت كراش",
+  "Save the Hamster": "أنقذ الهامستر",
+  "Goblin Run": "جري العفريت",
+  "Quantum X": "كوانتم إكس",
+  "High Flyer": "الطائر العالي",
+  "F777 Fighter": "المقاتلة F777",
+  Mriya: "ميريا",
+  "Long Ball": "الكرة الطويلة",
+  "Cricket Boom": "كريكيت بوم",
+  "Cash or Crash 2": "كاش أو كراش 2",
+  "Crash Puck": "كراش باك",
+  "Crash Touchdown": "كراش تاتش داون",
+  "Space Blaze": "لهيب الفضاء",
+  "Cash It Multiplayer": "كاش إت جماعي",
+  "Cash or Crash": "كاش أو كراش",
+  "Crash Birds Multiplayer": "طيور الكراش جماعي",
+  "Kick It Multiplayer": "كيك إت جماعي",
+  "Lucky Crumbling": "الحظ المتساقط",
+  "Crash, Hamster, Crash!": "اجرِ يا هامستر!",
+  "Crash Birds": "طيور الكراش",
+  "Fortune Tumble": "دوّامة الحظ",
+  "Triple Cash Or Crash": "تريبل كاش أو كراش",
+  "Cash Galaxy": "مجرّة الكاش",
+  "Stormy Witch": "الساحرة العاصفة",
+  "Need for X": "نيد فور إكس",
+  "9 Coins Easter": "9 عملات",
+  "Raider Jane's Crypt of Fortune": "مقبرة الحظ",
+  "Big Bass Crash": "بيج باس كراش",
+  "Rocket Race": "سباق الصواريخ",
+  "Monster Go Shopping": "الوحش يتسوّق",
+  "Fly To Universe": "طِر للكون",
+  "Deep Rush": "أعماق الإثارة",
+  "Sky Lantern": "فانوس السماء",
+  "Double Bubble": "دابل بابل",
+  "Fair Crash": "فير كراش",
+  "Space XY": "سبيس XY",
+  "Top Eagle": "النسر الذهبي",
+  "Limbo XY": "ليمبو XY",
+  "Gift X": "هدية X",
+  "Dragon's Crash": "كراش التنين",
+  "Arizona Smith and the Mayan Treasure": "كنز المايا",
+  "Magnify Man": "الرجل المكبّر",
+  "Chicken Road": "طريق الفرخة",
+  Plinko: "بلينكو",
+  "Chicken Road 2.0": "طريق الفرخة 2.0",
+  "Hamster Run": "جري الهامستر",
+  "Lucky Mines": "مناجم الحظ",
+  Tower: "البرج",
+  "Air Crash": "الطيارة",
+  "777": "٧٧٧",
+  Thimbles: "الكبايات",
+  "Swamp Land": "الضفدعة",
+  "Eastern Nights": "ليالي الشرق",
+  "Gems & Mines": "الجواهر والمناجم",
+  "Goal!": "جول!",
+  Dice: "الزهر",
+  Crash: "كراش",
+  "Crash Point": "نقطة الكراش",
+  "Vampire Curse": "لعنة الفامبير",
+  Crystal: "الكريستال",
+  "Burning Hot": "الفواكه الملتهبة",
+};
+
+export function arabicName(name: string) {
+  return arabicNames[name] ?? name;
+}
+
 
 export function slugify(name: string) {
   return name
