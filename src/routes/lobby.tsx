@@ -27,18 +27,22 @@ export const Route = createFileRoute("/lobby")({
   component: Lobby,
 });
 
-type LuckFilter = "all" | "hot" | "stable" | "unstable" | "instant";
+type TopCategory = "casino" | "instant";
+type LuckFilter = "all" | "hot" | "stable" | "unstable";
 
-const filters: { id: LuckFilter; label: string }[] = [
+const luckFilters: { id: LuckFilter; label: string }[] = [
   { id: "all", label: "All games" },
   { id: "hot", label: "Recommended" },
   { id: "stable", label: "Stable" },
   { id: "unstable", label: "Unstable" },
-  { id: "instant", label: "Instant" },
 ];
 
+const casinoGames = games.filter((g) => g.category === "casino");
+const instantGames = games.filter((g) => g.category === "instant");
+
 function Lobby() {
-  const [filter, setFilter] = useState<LuckFilter>("all");
+  const [topCategory, setTopCategory] = useState<TopCategory>("casino");
+  const [luckFilter, setLuckFilter] = useState<LuckFilter>("all");
   const [query, setQuery] = useState("");
   const [usersOnline, setUsersOnline] = useState(2417);
 
@@ -71,24 +75,31 @@ function Lobby() {
   );
 
   const hotGames = useMemo(
-    () => games.filter((g) => luckMap[g.name]?.level === "hot"),
+    () => casinoGames.filter((g) => luckMap[g.name]?.level === "hot"),
     [luckMap],
   );
   const stableGames = useMemo(
-    () => games.filter((g) => luckMap[g.name]?.level === "stable"),
+    () => casinoGames.filter((g) => luckMap[g.name]?.level === "stable"),
     [luckMap],
   );
 
   const visible = useMemo(() => {
+    const source = topCategory === "casino" ? casinoGames : instantGames;
     const byLuck =
-      filter === "all"
-        ? games
-        : filter === "instant"
-          ? games.filter((g) => g.category === "instant")
-          : games.filter((g) => luckMap[g.name]?.level === filter);
+      topCategory === "instant"
+        ? source
+        : luckFilter === "all"
+          ? source
+          : source.filter((g) => luckMap[g.name]?.level === luckFilter);
     const q = query.trim().toLowerCase();
     return q ? byLuck.filter((g) => g.name.toLowerCase().includes(q)) : byLuck;
-  }, [filter, query, luckMap]);
+  }, [topCategory, luckFilter, query, luckMap]);
+
+  const isCasino = topCategory === "casino";
+  const headerLabel =
+    topCategory === "instant"
+      ? "Instant games"
+      : luckFilters.find((f) => f.id === luckFilter)?.label ?? "All games";
 
   return (
     <>
@@ -126,7 +137,7 @@ function Lobby() {
               Casino Ai
             </h1>
             <p className="relative mt-2 text-center text-xs text-muted-foreground">
-              {games.length} premium games · instant play · live multipliers
+              {casinoGames.length} casino · {instantGames.length} instant · live multipliers
             </p>
 
             {/* Search */}
@@ -151,41 +162,70 @@ function Lobby() {
             </label>
           </section>
 
-          {/* Luck rails */}
-          <LuckRail
-            title="ننصحك بتجربة الألعاب"
-            subtitle="Recommended now"
-            luck={90}
-            tone="hot"
-            list={hotGames}
-          />
-          <LuckRail
-            title="ألعاب مستقرة"
-            subtitle="Stable games"
-            luck={70}
-            tone="stable"
-            list={stableGames}
-          />
-
-          {/* Luck filters */}
-          <nav className="mt-8 px-4">
-            <div className="flex items-center gap-1 rounded-full border border-border p-1 backdrop-blur-md">
-              {filters.map((f) => (
+          {/* Top-level category tabs: Casino / Instant games */}
+          <nav className="mt-7 px-4">
+            <div className="flex items-center gap-1 rounded-2xl border border-border p-1 backdrop-blur-md">
+              {(
+                [
+                  { id: "casino", label: "Casino" },
+                  { id: "instant", label: "Instant games" },
+                ] as { id: TopCategory; label: string }[]
+              ).map((t) => (
                 <button
-                  key={f.id}
+                  key={t.id}
                   type="button"
-                  onClick={() => setFilter(f.id)}
-                  className={`flex-1 rounded-full px-3 py-2 text-xs font-semibold transition-all ${
-                    filter === f.id
-                      ? "bg-gradient-to-r from-primary to-accent text-primary-foreground shadow-[0_0_20px_oklch(0.66_0.26_300/0.5)]"
+                  onClick={() => setTopCategory(t.id)}
+                  className={`flex-1 rounded-xl px-4 py-2.5 text-sm font-bold transition-all ${
+                    topCategory === t.id
+                      ? "bg-gradient-to-r from-primary to-accent text-primary-foreground shadow-[0_0_24px_oklch(0.66_0.26_300/0.5)]"
                       : "text-muted-foreground hover:text-foreground"
                   }`}
                 >
-                  {f.label}
+                  {t.label}
                 </button>
               ))}
             </div>
           </nav>
+
+          {/* Luck rails + luck filters — only under Casino */}
+          {isCasino && (
+            <>
+              <LuckRail
+                title="ننصحك بتجربة الألعاب"
+                subtitle="Recommended now"
+                luck={90}
+                tone="hot"
+                list={hotGames}
+              />
+              <LuckRail
+                title="ألعاب مستقرة"
+                subtitle="Stable games"
+                luck={70}
+                tone="stable"
+                list={stableGames}
+              />
+
+              {/* Luck filters */}
+              <nav className="mt-8 px-4">
+                <div className="flex items-center gap-1 rounded-full border border-border p-1 backdrop-blur-md">
+                  {luckFilters.map((f) => (
+                    <button
+                      key={f.id}
+                      type="button"
+                      onClick={() => setLuckFilter(f.id)}
+                      className={`flex-1 rounded-full px-3 py-2 text-xs font-semibold transition-all ${
+                        luckFilter === f.id
+                          ? "bg-gradient-to-r from-primary to-accent text-primary-foreground shadow-[0_0_20px_oklch(0.66_0.26_300/0.5)]"
+                          : "text-muted-foreground hover:text-foreground"
+                      }`}
+                    >
+                      {f.label}
+                    </button>
+                  ))}
+                </div>
+              </nav>
+            </>
+          )}
 
           {/* Grid */}
           <section className="px-4 pt-6">
@@ -193,7 +233,7 @@ function Lobby() {
               <div className="flex items-center gap-2">
                 <span className="h-4 w-1 rounded-full bg-gradient-to-b from-accent to-primary" />
                 <h2 className="text-sm font-bold uppercase tracking-widest text-foreground">
-                  {filters.find((f) => f.id === filter)?.label}
+                  {headerLabel}
                 </h2>
               </div>
               <span className="text-xs text-muted-foreground">{visible.length} games</span>
@@ -201,17 +241,19 @@ function Lobby() {
 
             <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
               {visible.map((game, i) => {
-                const level = luckMap[game.name]?.level;
+                const level = isCasino ? luckMap[game.name]?.level : undefined;
                 return (
                 <button
                   key={game.name}
                   type="button"
                   className={`group relative overflow-hidden rounded-2xl border text-left backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 ${
-                    level === "hot"
-                      ? "border-accent shadow-[0_0_0_1px_oklch(0.8_0.18_180/0.6),0_0_26px_oklch(0.8_0.18_180/0.7),0_0_60px_oklch(0.8_0.18_180/0.45)] hover:shadow-[0_0_0_2px_oklch(0.8_0.18_180/0.8),0_0_40px_oklch(0.8_0.18_180/0.9),0_0_90px_oklch(0.8_0.18_180/0.6)]"
-                      : level === "stable"
-                        ? "border-primary/50 hover:border-primary hover:shadow-[0_0_30px_oklch(0.66_0.26_300/0.45)]"
-                        : "border-border/40 opacity-65 saturate-[0.6] hover:border-primary/60 hover:opacity-100 hover:saturate-100 hover:shadow-[0_0_14px_oklch(0.66_0.26_300/0.25)]"
+                    !isCasino
+                      ? "border-accent/30 hover:border-accent hover:shadow-[0_0_26px_oklch(0.8_0.18_180/0.4)]"
+                      : level === "hot"
+                        ? "border-accent shadow-[0_0_0_1px_oklch(0.8_0.18_180/0.6),0_0_26px_oklch(0.8_0.18_180/0.7),0_0_60px_oklch(0.8_0.18_180/0.45)] hover:shadow-[0_0_0_2px_oklch(0.8_0.18_180/0.8),0_0_40px_oklch(0.8_0.18_180/0.9),0_0_90px_oklch(0.8_0.18_180/0.6)]"
+                        : level === "stable"
+                          ? "border-primary/50 hover:border-primary hover:shadow-[0_0_30px_oklch(0.66_0.26_300/0.45)]"
+                          : "border-border/40 opacity-65 saturate-[0.6] hover:border-primary/60 hover:opacity-100 hover:saturate-100 hover:shadow-[0_0_14px_oklch(0.66_0.26_300/0.25)]"
                   }`}
                 >
                   <div className="relative overflow-hidden">
@@ -223,7 +265,9 @@ function Lobby() {
                       height={180}
                       className="aspect-[301/180] w-full object-cover transition-transform duration-500 group-hover:scale-110"
                     />
-                    {luckMap[game.name] && <LuckBadge info={luckMap[game.name]!} />}
+                    {isCasino && luckMap[game.name] && (
+                      <LuckBadge info={luckMap[game.name]!} />
+                    )}
                     <span className="absolute inset-0 flex items-center justify-center bg-background/60 opacity-0 backdrop-blur-[2px] transition-opacity duration-300 group-hover:opacity-100">
                       <span className="rounded-full bg-gradient-to-r from-primary to-accent px-4 py-1.5 text-[11px] font-bold uppercase tracking-widest text-primary-foreground shadow-[0_0_22px_oklch(0.66_0.26_300/0.6)]">
                         Play
@@ -237,19 +281,21 @@ function Lobby() {
                     <span className="mt-1 flex items-center gap-1.5">
                       <span
                         className={`h-1.5 w-1.5 shrink-0 rounded-full ${
-                          luckMap[game.name]?.level === "hot"
+                          !isCasino
                             ? "bg-accent"
-                            : luckMap[game.name]?.level === "stable"
-                              ? "bg-primary"
-                              : "bg-muted-foreground/50"
+                            : luckMap[game.name]?.level === "hot"
+                              ? "bg-accent"
+                              : luckMap[game.name]?.level === "stable"
+                                ? "bg-primary"
+                                : "bg-muted-foreground/50"
                         }`}
                       />
                       <span className="truncate text-[9px] text-muted-foreground" dir="rtl">
-                        {luckMap[game.name]
-                          ? luckShortLabels[luckMap[game.name]!.level]
-                          : game.category === "casino"
-                            ? "Casino"
-                            : "Instant"}
+                        {!isCasino
+                          ? "Instant"
+                          : luckMap[game.name]
+                            ? luckShortLabels[luckMap[game.name]!.level]
+                            : "Casino"}
                       </span>
                     </span>
                   </span>
