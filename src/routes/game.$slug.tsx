@@ -195,9 +195,15 @@ function GamePredictor() {
               {phase === "waiting" && (
                 <div className="rounded-2xl border border-primary/40 p-5 text-center">
                   <p className="text-[11px] uppercase tracking-[0.25em] text-muted-foreground">
+                    Enter at
+                  </p>
+                  <p className="mt-1 font-mono text-2xl font-extrabold text-accent drop-shadow-[0_0_18px_oklch(0.8_0.18_180/0.6)]">
+                    {enterAt != null ? formatEnterTime(enterAt) : "--:--"}
+                  </p>
+                  <p className="mt-3 text-[11px] uppercase tracking-[0.25em] text-muted-foreground">
                     Next entry in
                   </p>
-                  <p className="mt-2 font-mono text-4xl font-extrabold text-foreground drop-shadow-[0_0_20px_oklch(0.66_0.26_300/0.7)]">
+                  <p className="mt-1 font-mono text-4xl font-extrabold text-foreground drop-shadow-[0_0_20px_oklch(0.66_0.26_300/0.7)]">
                     {fmt(remaining)}
                   </p>
                   <p className="mt-2 text-xs text-muted-foreground" dir="rtl">
