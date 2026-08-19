@@ -252,9 +252,6 @@ function GamePredictor() {
   );
 }
 
-function buildPlaceholder(kind: ReturnType<typeof getKind>): Prediction {
-  return buildPrediction(kind);
-}
 
 function Stat({ label, value }: { label: string; value: string }) {
   return (
