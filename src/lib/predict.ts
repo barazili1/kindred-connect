@@ -1,6 +1,15 @@
 import { games, type Game } from "@/data/games";
 
-export type PredictionKind = "crash" | "dice" | "thimbles" | "mines" | "goal" | "slot" | "wheel";
+export type PredictionKind =
+  | "crash"
+  | "dice"
+  | "thimbles"
+  | "mines"
+  | "goal"
+  | "slot"
+  | "wheel"
+  | "swamp"
+  | "gems";
 
 export function slugify(name: string) {
   return name
