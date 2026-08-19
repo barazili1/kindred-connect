@@ -385,6 +385,71 @@ function Board({ prediction }: { prediction: Prediction }) {
     case "wheel":
       return <Stat label="Predicted segment" value={prediction.segment} />;
 
+    case "swamp":
+      return (
+        <div className="space-y-2 rounded-2xl border border-primary/40 bg-background/40 p-3">
+          {prediction.rows.map((row, r) => (
+            <div key={r} className="flex items-center gap-2">
+              <span className="w-16 shrink-0 rounded-lg border border-accent/40 py-1 text-center text-[10px] font-bold text-accent">
+                {row.multiplier}
+              </span>
+              <div
+                className="grid flex-1 gap-2"
+                style={{ gridTemplateColumns: `repeat(${prediction.cols}, minmax(0, 1fr))` }}
+              >
+                {Array.from({ length: prediction.cols }, (_, c) => {
+                  const safe = c === row.safe;
+                  return (
+                    <div
+                      key={c}
+                      className={`flex aspect-square items-center justify-center rounded-xl border text-lg ${
+                        safe
+                          ? "border-accent bg-accent/10 shadow-[0_0_22px_oklch(0.8_0.18_180/0.5)]"
+                          : "border-border/50 opacity-45"
+                      }`}
+                    >
+                      {safe ? "🐸" : "🍃"}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
+          <p className="pt-1 text-center text-[11px] text-muted-foreground" dir="rtl">
+            الورقة المضيئة في كل صف هي الطريق الآمن
+          </p>
+        </div>
+      );
+
+    case "gems":
+      return (
+        <div>
+          <div
+            className="grid gap-1 rounded-2xl border border-primary/40 bg-background/40 p-2"
+            style={{ gridTemplateColumns: `repeat(${prediction.cols}, minmax(0, 1fr))` }}
+          >
+            {prediction.grid.map((sym, i) => {
+              const hit = prediction.cluster.includes(i);
+              return (
+                <div
+                  key={i}
+                  className={`flex aspect-square items-center justify-center rounded-lg border text-sm ${
+                    hit
+                      ? "border-accent bg-accent/10 shadow-[0_0_18px_oklch(0.8_0.18_180/0.5)]"
+                      : "border-border/40 opacity-40"
+                  }`}
+                >
+                  {sym}
+                </div>
+              );
+            })}
+          </div>
+          <div className="mt-3 grid grid-cols-1 gap-3">
+            <Stat label="Predicted cluster" value={`${prediction.cluster.length} gems`} />
+          </div>
+        </div>
+      );
+
     default:
       return (
         <div>
