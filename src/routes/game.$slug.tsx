@@ -228,6 +228,9 @@ function GamePredictor() {
                   <p className="mt-2 text-xs text-muted-foreground" dir="rtl">
                     دخول الآن على {name} بالتوقع اللي فوق
                   </p>
+                  <p className="mt-1 font-mono text-xs text-accent">
+                    {enterAt != null ? formatEnterTime(enterAt) : ""}
+                  </p>
                   <button
                     type="button"
                     onClick={reset}
