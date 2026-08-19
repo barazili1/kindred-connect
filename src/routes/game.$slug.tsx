@@ -10,7 +10,7 @@ import {
   formatEnterTime,
   getGameBySlug,
   getKind,
-  arabicName,
+  
   type Prediction,
 } from "@/lib/predict";
 
@@ -142,7 +142,7 @@ function GamePredictor() {
             <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
             <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-3 p-4">
               <div>
-                <h1 className="text-lg font-extrabold text-foreground sm:text-2xl" dir="rtl">{arabicName(name)}</h1>
+                <h1 className="text-lg font-extrabold text-foreground sm:text-2xl">{name}</h1>
                 <p className="mt-1 text-[11px] uppercase tracking-[0.2em] text-accent">
                   AI Signal Predictor
                 </p>
@@ -231,7 +231,7 @@ function GamePredictor() {
                     خش جيم 🚀
                   </p>
                   <p className="mt-2 text-xs text-muted-foreground" dir="rtl">
-                    دخول الآن على {arabicName(name)} بالتوقع اللي فوق
+                    دخول الآن على {name} بالتوقع اللي فوق
                   </p>
                   <p className="mt-1 font-mono text-xs text-accent">
                     {enterAt != null ? formatEnterTime(enterAt) : ""}
