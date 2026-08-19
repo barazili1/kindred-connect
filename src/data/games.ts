@@ -52,8 +52,21 @@ import g_chickenRoad20 from "@/assets/g/chicken-road-2-0.png.asset.json";
 import g_hamsterRun from "@/assets/g/hamster-run.png.asset.json";
 import g_luckyMines from "@/assets/g/lucky-mines.png.asset.json";
 import g_tower from "@/assets/g/tower.png.asset.json";
+import i_airCrash from "@/assets/i/air-crash.jpg.asset.json";
+import i_777 from "@/assets/i/777.jpg.asset.json";
+import i_thimbles from "@/assets/i/thimbles.jpg.asset.json";
+import i_swampLand from "@/assets/i/swamp-land.jpg.asset.json";
+import i_easternNights from "@/assets/i/eastern-nights.jpg.asset.json";
+import i_gemsMines from "@/assets/i/gems-mines.jpg.asset.json";
+import i_goal from "@/assets/i/goal.jpg.asset.json";
+import i_dice from "@/assets/i/dice.jpg.asset.json";
+import i_crash from "@/assets/i/crash.jpg.asset.json";
+import i_crashPoint from "@/assets/i/crash-point.jpg.asset.json";
+import i_vampireCurse from "@/assets/i/vampire-curse.jpg.asset.json";
+import i_crystal from "@/assets/i/crystal.jpg.asset.json";
+import i_burningHot from "@/assets/i/burning-hot.jpg.asset.json";
 
-export type GameCategory = "casino";
+export type GameCategory = "casino" | "instant";
 
 export type Game = {
   name: string;
@@ -116,4 +129,17 @@ export const games: Game[] = [
   { name: "Hamster Run", image: g_hamsterRun.url, category: "casino" },
   { name: "Lucky Mines", image: g_luckyMines.url, category: "casino" },
   { name: "Tower", image: g_tower.url, category: "casino" },
+  { name: "Air Crash", image: i_airCrash.url, category: "instant" },
+  { name: "777", image: i_777.url, category: "instant" },
+  { name: "Thimbles", image: i_thimbles.url, category: "instant" },
+  { name: "Swamp Land", image: i_swampLand.url, category: "instant" },
+  { name: "Eastern Nights", image: i_easternNights.url, category: "instant" },
+  { name: "Gems & Mines", image: i_gemsMines.url, category: "instant" },
+  { name: "Goal!", image: i_goal.url, category: "instant" },
+  { name: "Dice", image: i_dice.url, category: "instant" },
+  { name: "Crash", image: i_crash.url, category: "instant" },
+  { name: "Crash Point", image: i_crashPoint.url, category: "instant" },
+  { name: "Vampire Curse", image: i_vampireCurse.url, category: "instant" },
+  { name: "Crystal", image: i_crystal.url, category: "instant" },
+  { name: "Burning Hot", image: i_burningHot.url, category: "instant" },
 ];
