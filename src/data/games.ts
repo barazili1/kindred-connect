@@ -52,26 +52,6 @@ import g_chickenRoad20 from "@/assets/g/chicken-road-2-0.png.asset.json";
 import g_hamsterRun from "@/assets/g/hamster-run.png.asset.json";
 import g_luckyMines from "@/assets/g/lucky-mines.png.asset.json";
 import g_tower from "@/assets/g/tower.png.asset.json";
-import g_forestArrow from "@/assets/g/forest-arrow.png.asset.json";
-import g_aviaFly from "@/assets/g/avia-fly.png.asset.json";
-import g_plinko1000Aztec from "@/assets/g/plinko-1000-aztec.png.asset.json";
-import g_sugarDaddy from "@/assets/g/sugar-daddy.png.asset.json";
-import g_mines from "@/assets/g/mines.png.asset.json";
-import g_hotMines from "@/assets/g/hot-mines.png.asset.json";
-import g_limbo from "@/assets/g/limbo.png.asset.json";
-import g_coinflip from "@/assets/g/coinflip.png.asset.json";
-import g_triple from "@/assets/g/triple.png.asset.json";
-import g_bubbles from "@/assets/g/bubbles.png.asset.json";
-import g_wheel from "@/assets/g/wheel.png.asset.json";
-import g_stairs from "@/assets/g/stairs.png.asset.json";
-import g_roulette from "@/assets/g/roulette.png.asset.json";
-import g_penaltyUnlimited from "@/assets/g/penalty-unlimited.png.asset.json";
-import g_squidGamebler from "@/assets/g/squid-gamebler.png.asset.json";
-import g_crash from "@/assets/g/crash.png.asset.json";
-import g_cryptos from "@/assets/g/cryptos.png.asset.json";
-import g_jogoDoBicho from "@/assets/g/jogo-do-bicho.png.asset.json";
-import g_jokerPoker from "@/assets/g/joker-poker.png.asset.json";
-import g_sweetKeno from "@/assets/g/sweet-keno.png.asset.json";
 
 export type GameCategory = "casino" | "instant";
 
@@ -136,24 +116,4 @@ export const games: Game[] = [
   { name: "Hamster Run", image: g_hamsterRun.url, category: "casino" },
   { name: "Lucky Mines", image: g_luckyMines.url, category: "casino" },
   { name: "Tower", image: g_tower.url, category: "casino" },
-  { name: "Forest Arrow", image: g_forestArrow.url, category: "casino" },
-  { name: "Avia Fly", image: g_aviaFly.url, category: "casino" },
-  { name: "Plinko 1000 Aztec", image: g_plinko1000Aztec.url, category: "casino" },
-  { name: "Sugar Daddy", image: g_sugarDaddy.url, category: "casino" },
-  { name: "Mines", image: g_mines.url, category: "casino" },
-  { name: "Hot Mines", image: g_hotMines.url, category: "casino" },
-  { name: "Limbo", image: g_limbo.url, category: "casino" },
-  { name: "CoinFlip", image: g_coinflip.url, category: "casino" },
-  { name: "Triple", image: g_triple.url, category: "casino" },
-  { name: "Bubbles", image: g_bubbles.url, category: "casino" },
-  { name: "Wheel", image: g_wheel.url, category: "casino" },
-  { name: "Stairs", image: g_stairs.url, category: "casino" },
-  { name: "Roulette", image: g_roulette.url, category: "casino" },
-  { name: "Penalty Unlimited", image: g_penaltyUnlimited.url, category: "casino" },
-  { name: "Squid Gamebler", image: g_squidGamebler.url, category: "casino" },
-  { name: "Crash", image: g_crash.url, category: "casino" },
-  { name: "Cryptos", image: g_cryptos.url, category: "casino" },
-  { name: "Jogo Do Bicho", image: g_jogoDoBicho.url, category: "casino" },
-  { name: "Joker Poker", image: g_jokerPoker.url, category: "casino" },
-  { name: "Sweet Keno", image: g_sweetKeno.url, category: "casino" },
 ];
