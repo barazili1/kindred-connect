@@ -151,7 +151,6 @@ function Lobby() {
             luck={90}
             tone="hot"
             list={hotGames}
-            endsAt={slot?.endsAt}
           />
           <LuckRail
             title="ألعاب مستقرة"
@@ -159,7 +158,6 @@ function Lobby() {
             luck={70}
             tone="stable"
             list={stableGames}
-            endsAt={slot?.endsAt}
           />
 
           {/* Tabs */}
