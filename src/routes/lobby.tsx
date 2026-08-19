@@ -37,7 +37,7 @@ const filters: { id: LuckFilter; label: string }[] = [
 ];
 
 function Lobby() {
-  const [tab, setTab] = useState<Tab>("all");
+  const [filter, setFilter] = useState<LuckFilter>("all");
   const [query, setQuery] = useState("");
   const [usersOnline, setUsersOnline] = useState(2417);
 
