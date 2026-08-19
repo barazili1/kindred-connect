@@ -27,12 +27,13 @@ export const Route = createFileRoute("/lobby")({
   component: Lobby,
 });
 
-type Tab = "all" | GameCategory;
+type LuckFilter = "all" | "hot" | "stable" | "unstable";
 
-const tabs: { id: Tab; label: string }[] = [
+const filters: { id: LuckFilter; label: string }[] = [
   { id: "all", label: "All games" },
-  { id: "casino", label: "Casino games" },
-  { id: "instant", label: "Instant games" },
+  { id: "hot", label: "Recommended" },
+  { id: "stable", label: "Stable" },
+  { id: "unstable", label: "Unstable" },
 ];
 
 function Lobby() {
