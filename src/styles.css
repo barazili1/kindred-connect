@@ -185,3 +185,17 @@
     transparent
   );
 }
+
+@utility rail-scroller {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  overscroll-behavior-x: contain;
+  touch-action: pan-x;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+  &:active .animate-rail,
+  &:hover .animate-rail {
+    animation-play-state: paused;
+  }
+}
