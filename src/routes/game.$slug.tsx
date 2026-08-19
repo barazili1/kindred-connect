@@ -61,6 +61,7 @@ function GamePredictor() {
   const [prediction, setPrediction] = useState<Prediction | null>(null);
   const [remaining, setRemaining] = useState(0);
   const [enterAt, setEnterAt] = useState<number | null>(null);
+  const [total, setTotal] = useState(1);
   const timer = useRef<number | null>(null);
 
   useEffect(() => {
@@ -79,7 +80,9 @@ function GamePredictor() {
 
   const start = () => {
     setPrediction(buildPrediction(kind));
-    setEnterAt(Date.now() + buildEnterDelayMs());
+    const delay = buildEnterDelayMs();
+    setTotal(delay);
+    setEnterAt(Date.now() + delay);
     setPhase("waiting");
   };
 
@@ -194,11 +197,7 @@ function GamePredictor() {
                     <div
                       className="h-full rounded-full bg-gradient-to-r from-primary to-accent transition-[width] duration-300"
                       style={{
-                        width: `${
-                          enterAt
-                            ? Math.min(100, Math.max(0, 100 - (remaining / (enterAt - (enterAt - 300_000))) * 100))
-                            : 0
-                        }%`,
+                        width: `${Math.min(100, Math.max(0, 100 - (remaining / total) * 100))}%`,
                       }}
                     />
                   </div>
