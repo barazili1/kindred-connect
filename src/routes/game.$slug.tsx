@@ -1,10 +1,13 @@
 import { Link, createFileRoute, notFound } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 
+import ballAsset from "@/assets/t/ball.png.asset.json";
+import cupAsset from "@/assets/t/cup.png.asset.json";
 import { ParticlesBackground } from "@/components/ParticlesBackground";
 import {
   buildEnterDelayMs,
   buildPrediction,
+  formatEnterTime,
   getGameBySlug,
   getKind,
   type Prediction,
