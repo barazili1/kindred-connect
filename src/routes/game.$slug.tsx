@@ -7,7 +7,6 @@ import {
   buildPrediction,
   getGameBySlug,
   getKind,
-  slugify,
   type Prediction,
 } from "@/lib/predict";
 
@@ -406,5 +405,3 @@ function Board({ prediction }: { prediction: Prediction }) {
       );
   }
 }
-
-export { slugify };
