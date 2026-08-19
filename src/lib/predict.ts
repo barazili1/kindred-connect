@@ -9,7 +9,86 @@ export type PredictionKind =
   | "slot"
   | "wheel"
   | "swamp"
-  | "gems";
+  | "gems"
+  | "eastern"
+  | "cashout"
+  | "none";
+
+/** Arabic display names. Falls back to the original name when unmapped. */
+const arabicNames: Record<string, string> = {
+  Aviator: "أفياتور",
+  Spaceman: "سبيس مان",
+  "Penalty Shoot-Out Street": "ضربات الجزاء",
+  "Doodle Crash": "دودل كراش",
+  Zeppelin: "زبلن",
+  "To Mars and Beyond": "إلى المريخ وما بعده",
+  "Cricket Crash": "كريكيت كراش",
+  "Save the Hamster": "أنقذ الهامستر",
+  "Goblin Run": "جري العفريت",
+  "Quantum X": "كوانتم إكس",
+  "High Flyer": "الطائر العالي",
+  "F777 Fighter": "المقاتلة F777",
+  Mriya: "ميريا",
+  "Long Ball": "الكرة الطويلة",
+  "Cricket Boom": "كريكيت بوم",
+  "Cash or Crash 2": "كاش أو كراش 2",
+  "Crash Puck": "كراش باك",
+  "Crash Touchdown": "كراش تاتش داون",
+  "Space Blaze": "لهيب الفضاء",
+  "Cash It Multiplayer": "كاش إت جماعي",
+  "Cash or Crash": "كاش أو كراش",
+  "Crash Birds Multiplayer": "طيور الكراش جماعي",
+  "Kick It Multiplayer": "كيك إت جماعي",
+  "Lucky Crumbling": "الحظ المتساقط",
+  "Crash, Hamster, Crash!": "اجرِ يا هامستر!",
+  "Crash Birds": "طيور الكراش",
+  "Fortune Tumble": "دوّامة الحظ",
+  "Triple Cash Or Crash": "تريبل كاش أو كراش",
+  "Cash Galaxy": "مجرّة الكاش",
+  "Stormy Witch": "الساحرة العاصفة",
+  "Need for X": "نيد فور إكس",
+  "9 Coins Easter": "9 عملات",
+  "Raider Jane's Crypt of Fortune": "مقبرة الحظ",
+  "Big Bass Crash": "بيج باس كراش",
+  "Rocket Race": "سباق الصواريخ",
+  "Monster Go Shopping": "الوحش يتسوّق",
+  "Fly To Universe": "طِر للكون",
+  "Deep Rush": "أعماق الإثارة",
+  "Sky Lantern": "فانوس السماء",
+  "Double Bubble": "دابل بابل",
+  "Fair Crash": "فير كراش",
+  "Space XY": "سبيس XY",
+  "Top Eagle": "النسر الذهبي",
+  "Limbo XY": "ليمبو XY",
+  "Gift X": "هدية X",
+  "Dragon's Crash": "كراش التنين",
+  "Arizona Smith and the Mayan Treasure": "كنز المايا",
+  "Magnify Man": "الرجل المكبّر",
+  "Chicken Road": "طريق الفرخة",
+  Plinko: "بلينكو",
+  "Chicken Road 2.0": "طريق الفرخة 2.0",
+  "Hamster Run": "جري الهامستر",
+  "Lucky Mines": "مناجم الحظ",
+  Tower: "البرج",
+  "Air Crash": "الطيارة",
+  "777": "٧٧٧",
+  Thimbles: "الكبايات",
+  "Swamp Land": "الضفدعة",
+  "Eastern Nights": "ليالي الشرق",
+  "Gems & Mines": "الجواهر والمناجم",
+  "Goal!": "جول!",
+  Dice: "الزهر",
+  Crash: "كراش",
+  "Crash Point": "نقطة الكراش",
+  "Vampire Curse": "لعنة الفامبير",
+  Crystal: "الكريستال",
+  "Burning Hot": "الفواكه الملتهبة",
+};
+
+export function arabicName(name: string) {
+  return arabicNames[name] ?? name;
+}
+
 
 export function slugify(name: string) {
   return name
@@ -34,8 +113,12 @@ const kindByName: Record<string, PredictionKind> = {
   "Gems & Mines": "mines",
   "Goal!": "goal",
   Goal: "goal",
-  "Swamp Land": "swamp",
-  Crystal: "gems",
+  "Swamp Land": "cashout",
+  "Eastern Nights": "eastern",
+  Crystal: "none",
+  "Vampire Curse": "none",
+  "777": "none",
+  "Burning Hot": "none",
 };
 
 export function getKind(name: string): PredictionKind {
@@ -53,6 +136,9 @@ export type Prediction =
   | { kind: "goal"; pick: number; corners: number }
   | { kind: "slot"; reels: string[][]; spins: number; payline: number }
   | { kind: "wheel"; segment: string }
+  | { kind: "cashout"; steps: { step: number; multiplier: string }[] }
+  | { kind: "eastern"; rows: { multiplier: string; safe: number }[]; cols: number }
+  | { kind: "none" }
   | { kind: "swamp"; rows: { multiplier: string; safe: number }[]; cols: number }
   | { kind: "gems"; grid: string[]; cluster: number[]; cols: number };
 
@@ -93,6 +179,30 @@ export function buildPrediction(kind: PredictionKind): Prediction {
       return { kind: "goal", pick: Math.floor(rnd(0, 3)), corners: Math.round(rnd(2, 4)) };
     case "wheel":
       return { kind: "wheel", segment: `x${Math.round(rnd(2, 40))}` };
+    case "none":
+      return { kind: "none" };
+    case "cashout": {
+      const count = Math.floor(rnd(1, 4)); // 1 – 3 خانات عشوائية
+      const steps: { step: number; multiplier: string }[] = [];
+      let step = Math.floor(rnd(2, 5));
+      let m = rnd(1.3, 2.1);
+      for (let i = 0; i < count; i++) {
+        steps.push({ step, multiplier: `x${m.toFixed(2)}` });
+        step += Math.floor(rnd(2, 5));
+        m *= rnd(1.4, 2.3);
+      }
+      return { kind: "cashout", steps };
+    }
+    case "eastern": {
+      const cols = 5;
+      let m = rnd(1.15, 1.35);
+      const rows = Array.from({ length: 10 }, () => {
+        const row = { multiplier: `x${m.toFixed(2)}`, safe: Math.floor(rnd(0, cols)) };
+        m *= rnd(1.25, 1.6);
+        return row;
+      }).reverse();
+      return { kind: "eastern", rows, cols };
+    }
     case "swamp": {
       const cols = 5;
       const mults = [27.16, 5.43, 2.17, 1.3];
@@ -130,13 +240,13 @@ export function buildEnterDelayMs() {
   return Math.round(rnd(60_000, 300_000));
 }
 
-/** Exact entry time in 12-hour format, e.g. "7:43:20 PM". */
+/** Exact entry time in 12-hour Hours:Minutes format, e.g. "7:43 PM". */
 export function formatEnterTime(ts: number) {
   const d = new Date(ts);
   let h = d.getHours();
   const ampm = h >= 12 ? "PM" : "AM";
   h = h % 12 || 12;
   const mm = String(d.getMinutes()).padStart(2, "0");
-  const ss = String(d.getSeconds()).padStart(2, "0");
-  return `${h}:${mm}:${ss} ${ampm}`;
+  return `${h}:${mm} ${ampm}`;
 }
+

@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import logo from "@/assets/casino-ai-logo.png";
 import { ParticlesBackground } from "@/components/ParticlesBackground";
 import { games, type Game } from "@/data/games";
-import { slugify } from "@/lib/predict";
+import { arabicName, slugify } from "@/lib/predict";
 import { getLuckMap, getLuckSlot, luckShortLabels, type LuckInfo } from "@/lib/luck";
 
 export const Route = createFileRoute("/lobby")({
@@ -93,7 +93,11 @@ function Lobby() {
           ? source
           : source.filter((g) => luckMap[g.name]?.level === luckFilter);
     const q = query.trim().toLowerCase();
-    return q ? byLuck.filter((g) => g.name.toLowerCase().includes(q)) : byLuck;
+    return q
+      ? byLuck.filter(
+          (g) => g.name.toLowerCase().includes(q) || arabicName(g.name).includes(query.trim()),
+        )
+      : byLuck;
   }, [topCategory, luckFilter, query, luckMap]);
 
   const isCasino = topCategory === "casino";
@@ -276,8 +280,8 @@ function Lobby() {
                     </span>
                   </div>
                   <span className="block px-2.5 py-2">
-                    <span className="block truncate text-xs font-semibold text-card-foreground">
-                      {game.name}
+                    <span className="block truncate text-xs font-semibold text-card-foreground" dir="rtl">
+                      {arabicName(game.name)}
                     </span>
                     <span className="mt-1 flex items-center gap-1.5">
                       <span
@@ -480,8 +484,8 @@ function LuckRail({
                   ↑{luck}%
                 </span>
                 <span className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-background via-background/75 to-transparent px-2 pb-1.5 pt-6">
-                  <span className="block truncate text-[11px] font-semibold text-foreground">
-                    {game.name}
+                  <span className="block truncate text-[11px] font-semibold text-foreground" dir="rtl">
+                    {arabicName(game.name)}
                   </span>
                 </span>
               </span>

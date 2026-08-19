@@ -10,6 +10,7 @@ import {
   formatEnterTime,
   getGameBySlug,
   getKind,
+  arabicName,
   type Prediction,
 } from "@/lib/predict";
 
@@ -141,7 +142,7 @@ function GamePredictor() {
             <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
             <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-3 p-4">
               <div>
-                <h1 className="text-lg font-extrabold text-foreground sm:text-2xl">{name}</h1>
+                <h1 className="text-lg font-extrabold text-foreground sm:text-2xl" dir="rtl">{arabicName(name)}</h1>
                 <p className="mt-1 text-[11px] uppercase tracking-[0.2em] text-accent">
                   AI Signal Predictor
                 </p>
@@ -161,24 +162,28 @@ function GamePredictor() {
             <div className="pointer-events-none absolute -left-16 -top-16 h-48 w-48 rounded-full bg-primary/20 blur-[70px]" />
             <div className="pointer-events-none absolute -bottom-16 -right-10 h-48 w-48 rounded-full bg-accent/15 blur-[70px]" />
 
-            <div className="relative flex items-center justify-between">
-              <h2 className="text-xs font-bold uppercase tracking-[0.25em] text-muted-foreground">
-                Prediction
-              </h2>
-              <span className="text-[10px] font-semibold text-muted-foreground" dir="rtl">
-                توقّع الجيم القادم
-              </span>
-            </div>
+            {kind !== "none" && (
+              <>
+                <div className="relative flex items-center justify-between">
+                  <h2 className="text-xs font-bold uppercase tracking-[0.25em] text-muted-foreground">
+                    Prediction
+                  </h2>
+                  <span className="text-[10px] font-semibold text-muted-foreground" dir="rtl">
+                    توقّع الجيم القادم
+                  </span>
+                </div>
 
-            <div
-              className={`relative mt-4 transition-all duration-500 ${
-                prediction ? "opacity-100" : "select-none opacity-40 blur-[6px]"
-              }`}
-            >
-              {(prediction ?? placeholder) && (
-                <Board prediction={(prediction ?? placeholder)!} revealed={prediction !== null} />
-              )}
-            </div>
+                <div
+                  className={`relative mt-4 transition-all duration-500 ${
+                    prediction ? "opacity-100" : "select-none opacity-40 blur-[6px]"
+                  }`}
+                >
+                  {(prediction ?? placeholder) && (
+                    <Board prediction={(prediction ?? placeholder)!} revealed={prediction !== null} />
+                  )}
+                </div>
+              </>
+            )}
 
             {/* Status / CTA */}
             <div className="relative mt-6">
@@ -226,7 +231,7 @@ function GamePredictor() {
                     خش جيم 🚀
                   </p>
                   <p className="mt-2 text-xs text-muted-foreground" dir="rtl">
-                    دخول الآن على {name} بالتوقع اللي فوق
+                    دخول الآن على {arabicName(name)} بالتوقع اللي فوق
                   </p>
                   <p className="mt-1 font-mono text-xs text-accent">
                     {enterAt != null ? formatEnterTime(enterAt) : ""}
@@ -478,6 +483,65 @@ function Board({ prediction, revealed }: { prediction: Prediction; revealed: boo
           <div className="mt-3 grid grid-cols-1 gap-3">
             <Stat label="Predicted cluster" value={`${prediction.cluster.length} gems`} />
           </div>
+        </div>
+      );
+
+    case "none":
+      return null;
+
+    case "cashout":
+      return (
+        <div className="space-y-3">
+          {prediction.steps.map((s, i) => (
+            <div
+              key={i}
+              className="flex items-center justify-between gap-3 rounded-2xl border border-accent/50 bg-accent/10 px-4 py-3 shadow-[0_0_26px_oklch(0.8_0.18_180/0.35)]"
+              dir="rtl"
+            >
+              <span className="text-sm font-extrabold text-accent">اسحب الآن</span>
+              <span className="font-mono text-xs text-muted-foreground">الخطوة {s.step}</span>
+              <span className="font-mono text-lg font-extrabold text-foreground">{s.multiplier}</span>
+            </div>
+          ))}
+          <p className="text-center text-[11px] text-muted-foreground" dir="rtl">
+            اسحب عند المضاعفات اللي فوق — التوقيت عشوائي كل جيم
+          </p>
+        </div>
+      );
+
+    case "eastern":
+      return (
+        <div className="space-y-1.5 rounded-2xl border border-primary/40 bg-background/40 p-3">
+          {prediction.rows.map((row, r) => (
+            <div key={r} className="flex items-center gap-2">
+              <span className="w-16 shrink-0 rounded-lg border border-accent/40 py-1 text-center text-[10px] font-bold text-accent">
+                {row.multiplier}
+              </span>
+              <div
+                className="grid flex-1 gap-1.5"
+                style={{ gridTemplateColumns: `repeat(${prediction.cols}, minmax(0, 1fr))` }}
+              >
+                {Array.from({ length: prediction.cols }, (_, c) => {
+                  const safe = c === row.safe;
+                  return (
+                    <div
+                      key={c}
+                      className={`flex aspect-square items-center justify-center rounded-lg border text-xs ${
+                        safe
+                          ? "border-accent bg-accent/10 shadow-[0_0_18px_oklch(0.8_0.18_180/0.5)]"
+                          : "border-border/50 opacity-40"
+                      }`}
+                    >
+                      {safe ? "✦" : ""}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
+          <p className="pt-1 text-center text-[11px] text-muted-foreground" dir="rtl">
+            ١٠ صفوف — الخانة المضيئة في كل صف هي المتوقّعة
+          </p>
         </div>
       );
 
