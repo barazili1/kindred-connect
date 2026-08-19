@@ -481,6 +481,65 @@ function Board({ prediction, revealed }: { prediction: Prediction; revealed: boo
         </div>
       );
 
+    case "none":
+      return null;
+
+    case "cashout":
+      return (
+        <div className="space-y-3">
+          {prediction.steps.map((s, i) => (
+            <div
+              key={i}
+              className="flex items-center justify-between gap-3 rounded-2xl border border-accent/50 bg-accent/10 px-4 py-3 shadow-[0_0_26px_oklch(0.8_0.18_180/0.35)]"
+              dir="rtl"
+            >
+              <span className="text-sm font-extrabold text-accent">اسحب الآن</span>
+              <span className="font-mono text-xs text-muted-foreground">الخطوة {s.step}</span>
+              <span className="font-mono text-lg font-extrabold text-foreground">{s.multiplier}</span>
+            </div>
+          ))}
+          <p className="text-center text-[11px] text-muted-foreground" dir="rtl">
+            اسحب عند المضاعفات اللي فوق — التوقيت عشوائي كل جيم
+          </p>
+        </div>
+      );
+
+    case "eastern":
+      return (
+        <div className="space-y-1.5 rounded-2xl border border-primary/40 bg-background/40 p-3">
+          {prediction.rows.map((row, r) => (
+            <div key={r} className="flex items-center gap-2">
+              <span className="w-16 shrink-0 rounded-lg border border-accent/40 py-1 text-center text-[10px] font-bold text-accent">
+                {row.multiplier}
+              </span>
+              <div
+                className="grid flex-1 gap-1.5"
+                style={{ gridTemplateColumns: `repeat(${prediction.cols}, minmax(0, 1fr))` }}
+              >
+                {Array.from({ length: prediction.cols }, (_, c) => {
+                  const safe = c === row.safe;
+                  return (
+                    <div
+                      key={c}
+                      className={`flex aspect-square items-center justify-center rounded-lg border text-xs ${
+                        safe
+                          ? "border-accent bg-accent/10 shadow-[0_0_18px_oklch(0.8_0.18_180/0.5)]"
+                          : "border-border/50 opacity-40"
+                      }`}
+                    >
+                      {safe ? "✦" : ""}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
+          <p className="pt-1 text-center text-[11px] text-muted-foreground" dir="rtl">
+            ١٠ صفوف — الخانة المضيئة في كل صف هي المتوقّعة
+          </p>
+        </div>
+      );
+
     default:
       return (
         <div>
