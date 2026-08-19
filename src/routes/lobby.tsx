@@ -299,7 +299,7 @@ function LuckBadge({ info }: { info: LuckInfo }) {
           <path d="M12 4v15m0 0 6-6m-6 6-6-6" />
         </svg>
       )}
-      {info.luck}%
+      {hot ? `Recommended ${info.luck}%` : stable ? "Stable" : `${info.luck}%`}
     </span>
   );
 }
