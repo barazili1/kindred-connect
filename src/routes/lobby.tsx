@@ -27,13 +27,14 @@ export const Route = createFileRoute("/lobby")({
   component: Lobby,
 });
 
-type LuckFilter = "all" | "hot" | "stable" | "unstable";
+type LuckFilter = "all" | "hot" | "stable" | "unstable" | "instant";
 
 const filters: { id: LuckFilter; label: string }[] = [
   { id: "all", label: "All games" },
   { id: "hot", label: "Recommended" },
   { id: "stable", label: "Stable" },
   { id: "unstable", label: "Unstable" },
+  { id: "instant", label: "Instant" },
 ];
 
 function Lobby() {
