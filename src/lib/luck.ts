@@ -62,3 +62,9 @@ export const luckLabels: Record<LuckLevel, string> = {
   stable: "ألعاب مستقرة",
   unstable: "ألعاب غير مستقرة حالياً — لا ننصحك باللعب الآن",
 };
+
+export const luckShortLabels: Record<LuckLevel, string> = {
+  hot: "ننصحك بتجربتها",
+  stable: "مستقرة",
+  unstable: "غير مستقرة حالياً",
+};

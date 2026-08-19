@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import logo from "@/assets/casino-ai-logo.png";
 import { ParticlesBackground } from "@/components/ParticlesBackground";
 import { games, type Game, type GameCategory } from "@/data/games";
-import { getLuckMap, getLuckSlot, luckLabels, type LuckInfo } from "@/lib/luck";
+import { getLuckMap, getLuckSlot, luckShortLabels, type LuckInfo } from "@/lib/luck";
 
 export const Route = createFileRoute("/lobby")({
   head: () => ({
@@ -151,7 +151,6 @@ function Lobby() {
             luck={90}
             tone="hot"
             list={hotGames}
-            endsAt={slot?.endsAt}
           />
           <LuckRail
             title="ألعاب مستقرة"
@@ -159,7 +158,6 @@ function Lobby() {
             luck={70}
             tone="stable"
             list={stableGames}
-            endsAt={slot?.endsAt}
           />
 
           {/* Tabs */}
@@ -218,19 +216,27 @@ function Lobby() {
                     </span>
                   </div>
                   <span className="block px-2.5 py-2">
-                    <span className="flex items-center justify-between gap-2">
-                      <span className="truncate text-xs font-semibold text-card-foreground">
-                        {game.name}
-                      </span>
-                      <span className="shrink-0 rounded-full border border-border px-1.5 py-0.5 text-[9px] uppercase tracking-wider text-muted-foreground">
-                        {game.category === "casino" ? "Casino" : "Instant"}
+                    <span className="block truncate text-xs font-semibold text-card-foreground">
+                      {game.name}
+                    </span>
+                    <span className="mt-1 flex items-center gap-1.5">
+                      <span
+                        className={`h-1.5 w-1.5 shrink-0 rounded-full ${
+                          luckMap[game.name]?.level === "hot"
+                            ? "bg-accent"
+                            : luckMap[game.name]?.level === "stable"
+                              ? "bg-primary"
+                              : "bg-muted-foreground/50"
+                        }`}
+                      />
+                      <span className="truncate text-[9px] text-muted-foreground" dir="rtl">
+                        {luckMap[game.name]
+                          ? luckShortLabels[luckMap[game.name]!.level]
+                          : game.category === "casino"
+                            ? "Casino"
+                            : "Instant"}
                       </span>
                     </span>
-                    {luckMap[game.name] && (
-                      <span className="mt-1.5 block text-[9px] leading-snug text-muted-foreground" dir="rtl">
-                        {luckLabels[luckMap[game.name]!.level]}
-                      </span>
-                    )}
                   </span>
                 </button>
               ))}
@@ -289,138 +295,112 @@ function LuckBadge({ info }: { info: LuckInfo }) {
   );
 }
 
-function Countdown({ endsAt }: { endsAt?: number }) {
-  const [left, setLeft] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (!endsAt) return;
-    const update = () => {
-      const ms = Math.max(0, endsAt - Date.now());
-      const m = Math.floor(ms / 60000);
-      const s = Math.floor((ms % 60000) / 1000);
-      setLeft(`${m}:${String(s).padStart(2, "0")}`);
-    };
-    update();
-    const id = window.setInterval(update, 1000);
-    return () => window.clearInterval(id);
-  }, [endsAt]);
-
-  if (!left) return null;
-  return (
-    <span className="rounded-full border border-border px-2 py-0.5 text-[10px] font-medium tabular-nums text-muted-foreground">
-      يتغير بعد {left}
-    </span>
-  );
-}
-
 function LuckRail({
   title,
   subtitle,
   luck,
   tone,
   list,
-  endsAt,
 }: {
   title: string;
   subtitle: string;
   luck: number;
   tone: "hot" | "stable";
   list: Game[];
-  endsAt?: number;
 }) {
   if (list.length === 0) return null;
   const hot = tone === "hot";
+  const loop = [...list, ...list];
 
   return (
-    <section className="mt-8 px-4">
+    <section className="mt-7 px-4">
       <div
-        className={`relative overflow-hidden rounded-3xl border p-4 backdrop-blur-md ${
+        className={`relative overflow-hidden rounded-[26px] border bg-gradient-to-b from-foreground/[0.04] to-transparent p-[18px] backdrop-blur-xl ${
           hot
-            ? "border-accent/40 shadow-[0_0_44px_oklch(0.8_0.18_180/0.18)]"
-            : "border-primary/40 shadow-[0_0_44px_oklch(0.66_0.26_300/0.18)]"
+            ? "border-accent/25 shadow-[0_18px_60px_-24px_oklch(0.8_0.18_180/0.45)]"
+            : "border-primary/25 shadow-[0_18px_60px_-24px_oklch(0.66_0.26_300/0.45)]"
         }`}
       >
         <span
-          className={`pointer-events-none absolute -left-16 -top-16 h-48 w-48 rounded-full blur-[70px] ${
-            hot ? "bg-accent/25" : "bg-primary/25"
+          className={`pointer-events-none absolute -top-24 left-1/2 h-48 w-[70%] -translate-x-1/2 rounded-full blur-[80px] ${
+            hot ? "bg-accent/15" : "bg-primary/15"
           }`}
         />
 
-        <div className="relative flex flex-wrap items-center justify-between gap-2">
-          <div className="flex items-center gap-2">
-            <span
-              className={`h-8 w-1 rounded-full ${
-                hot
-                  ? "bg-gradient-to-b from-accent to-primary"
-                  : "bg-gradient-to-b from-primary to-accent"
-              }`}
-            />
-            <span className="block">
-              <span className="block text-sm font-extrabold text-foreground" dir="rtl">
-                {title}
-              </span>
-              <span className="block text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-                {subtitle} · 10 games
-              </span>
+        {/* Header */}
+        <div className="relative flex items-center justify-between gap-3">
+          <div className="min-w-0">
+            <span className="block truncate text-[15px] font-extrabold tracking-tight text-foreground" dir="rtl">
+              {title}
+            </span>
+            <span className="mt-0.5 block text-[9px] uppercase tracking-[0.28em] text-muted-foreground">
+              {subtitle}
             </span>
           </div>
-          <div className="flex items-center gap-2">
-            <Countdown endsAt={endsAt} />
-            <span
-              className={`flex items-center gap-1 rounded-full border px-3 py-1 text-xs font-bold ${
-                hot
-                  ? "border-accent/60 text-accent shadow-[0_0_22px_oklch(0.8_0.18_180/0.35)]"
-                  : "border-primary/60 text-primary shadow-[0_0_22px_oklch(0.66_0.26_300/0.35)]"
-              }`}
+          <span
+            className={`flex shrink-0 items-center gap-1.5 rounded-full border px-3 py-1.5 text-[11px] font-bold backdrop-blur-md ${
+              hot
+                ? "border-accent/50 bg-accent/10 text-accent"
+                : "border-primary/50 bg-primary/10 text-primary"
+            }`}
+          >
+            <svg
+              aria-hidden="true"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={3}
+              className="h-3 w-3"
             >
-              <svg
-                aria-hidden="true"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth={3}
-                className="h-3 w-3"
-              >
-                <path d="M12 20V5m0 0-6 6m6-6 6 6" />
-              </svg>
-              نسبة الحظ {luck}%
-            </span>
-          </div>
+              <path d="M12 20V5m0 0-6 6m6-6 6 6" />
+            </svg>
+            <span className="tabular-nums">{luck}%</span>
+          </span>
         </div>
 
-        <div className="relative -mx-4 mt-4 flex gap-3 overflow-x-auto px-4 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-          {list.map((game) => (
-            <button
-              key={game.name}
-              type="button"
-              className={`group relative w-44 shrink-0 overflow-hidden rounded-2xl border text-left backdrop-blur-sm transition-all hover:-translate-y-1 ${
-                hot
-                  ? "border-accent/30 hover:border-accent hover:shadow-[0_0_30px_oklch(0.8_0.18_180/0.45)]"
-                  : "border-primary/30 hover:border-primary hover:shadow-[0_0_30px_oklch(0.66_0.26_300/0.45)]"
-              }`}
-            >
-              <img
-                src={game.image}
-                alt={`${game.name} game artwork`}
-                loading="lazy"
-                width={301}
-                height={180}
-                className="aspect-[301/180] w-full object-cover transition-transform duration-500 group-hover:scale-105"
-              />
+        <span
+          className={`relative mt-3 block h-px w-full ${
+            hot
+              ? "bg-gradient-to-r from-transparent via-accent/40 to-transparent"
+              : "bg-gradient-to-r from-transparent via-primary/40 to-transparent"
+          }`}
+        />
+
+        {/* Auto-scrolling rail */}
+        <div className="rail-mask relative -mx-[18px] mt-4 overflow-hidden">
+          <div className="animate-rail flex w-max gap-3 px-[18px]">
+            {loop.map((game, i) => (
               <span
-                className={`absolute right-2 top-2 rounded-full border bg-background/70 px-2 py-0.5 text-[10px] font-bold backdrop-blur-md ${
-                  hot ? "border-accent/60 text-accent" : "border-primary/60 text-primary"
+                key={`${game.name}-${i}`}
+                className={`group relative block w-40 shrink-0 overflow-hidden rounded-2xl border bg-background/20 transition-all duration-300 hover:-translate-y-1 ${
+                  hot
+                    ? "border-accent/20 hover:border-accent/70 hover:shadow-[0_0_28px_-4px_oklch(0.8_0.18_180/0.5)]"
+                    : "border-primary/20 hover:border-primary/70 hover:shadow-[0_0_28px_-4px_oklch(0.66_0.26_300/0.5)]"
                 }`}
               >
-                ↑ {luck}%
-              </span>
-              <span className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-background via-background/70 to-transparent px-2.5 pb-2 pt-7">
-                <span className="block truncate text-xs font-semibold text-foreground">
-                  {game.name}
+                <img
+                  src={game.image}
+                  alt={`${game.name} game artwork`}
+                  loading="lazy"
+                  width={301}
+                  height={180}
+                  className="aspect-[301/180] w-full object-cover"
+                />
+                <span
+                  className={`absolute right-1.5 top-1.5 rounded-full border bg-background/75 px-1.5 py-0.5 text-[9px] font-bold tabular-nums backdrop-blur-md ${
+                    hot ? "border-accent/50 text-accent" : "border-primary/50 text-primary"
+                  }`}
+                >
+                  ↑{luck}%
+                </span>
+                <span className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-background via-background/75 to-transparent px-2 pb-1.5 pt-6">
+                  <span className="block truncate text-[11px] font-semibold text-foreground">
+                    {game.name}
+                  </span>
                 </span>
               </span>
-            </button>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
     </section>
