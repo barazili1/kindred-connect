@@ -175,7 +175,9 @@ function GamePredictor() {
                 prediction ? "opacity-100" : "select-none opacity-40 blur-[6px]"
               }`}
             >
-              <Board prediction={prediction ?? buildPlaceholder(kind)} />
+              {(prediction ?? placeholder) && (
+                <Board prediction={(prediction ?? placeholder)!} revealed={prediction !== null} />
+              )}
             </div>
 
             {/* Status / CTA */}
