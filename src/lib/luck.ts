@@ -43,7 +43,9 @@ export function getLuckMap(slotIndex: number): Record<string, LuckInfo> {
   // Fisher–Yates with seeded rng
   for (let i = pool.length - 1; i > 0; i -= 1) {
     const j = Math.floor(rng() * (i + 1));
-    [pool[i], pool[j]] = [pool[j], pool[i]];
+    const tmp = pool[i] as string;
+    pool[i] = pool[j] as string;
+    pool[j] = tmp;
   }
 
   const map: Record<string, LuckInfo> = {};
