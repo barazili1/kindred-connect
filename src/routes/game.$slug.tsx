@@ -66,6 +66,11 @@ function GamePredictor() {
   const [enterAt, setEnterAt] = useState<number | null>(null);
   const [total, setTotal] = useState(1);
   const timer = useRef<number | null>(null);
+  const [placeholder, setPlaceholder] = useState<Prediction | null>(null);
+
+  useEffect(() => {
+    setPlaceholder(buildPrediction(kind));
+  }, [kind]);
 
   useEffect(() => {
     if (phase !== "waiting" || enterAt == null) return;
