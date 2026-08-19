@@ -204,7 +204,7 @@ function Lobby() {
                       ? "border-accent shadow-[0_0_0_1px_oklch(0.8_0.18_180/0.6),0_0_26px_oklch(0.8_0.18_180/0.7),0_0_60px_oklch(0.8_0.18_180/0.45)] hover:shadow-[0_0_0_2px_oklch(0.8_0.18_180/0.8),0_0_40px_oklch(0.8_0.18_180/0.9),0_0_90px_oklch(0.8_0.18_180/0.6)]"
                       : level === "stable"
                         ? "border-primary/50 hover:border-primary hover:shadow-[0_0_30px_oklch(0.66_0.26_300/0.45)]"
-                        : "border-border hover:border-primary hover:shadow-[0_0_30px_oklch(0.66_0.26_300/0.4)]"
+                        : "border-border/40 opacity-65 saturate-[0.6] hover:border-primary/60 hover:opacity-100 hover:saturate-100 hover:shadow-[0_0_14px_oklch(0.66_0.26_300/0.25)]"
                   }`}
                 >
                   <div className="relative overflow-hidden">
