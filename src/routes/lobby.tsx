@@ -143,44 +143,23 @@ function Lobby() {
             </label>
           </section>
 
-          {/* Featured rail */}
-          <section className="mt-8 px-4">
-            <div className="mb-3 flex items-center gap-2">
-              <span className="h-4 w-1 rounded-full bg-gradient-to-b from-accent to-primary" />
-              <h2 className="text-sm font-bold uppercase tracking-widest text-foreground">
-                Top picks
-              </h2>
-            </div>
-            <div className="-mx-4 flex gap-3 overflow-x-auto px-4 pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-              {featured.map((game, i) => (
-                <button
-                  key={game.name}
-                  type="button"
-                  className="group relative w-56 shrink-0 overflow-hidden rounded-2xl border border-border text-left backdrop-blur-sm transition-all hover:-translate-y-1 hover:border-primary hover:shadow-[0_0_34px_oklch(0.66_0.26_300/0.45)]"
-                >
-                  <img
-                    src={game.image}
-                    alt={`${game.name} game artwork`}
-                    loading={i < 3 ? "eager" : "lazy"}
-                    width={301}
-                    height={180}
-                    className="aspect-[301/180] w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                  />
-                  <span className="absolute left-2 top-2 rounded-full bg-background/70 px-2 py-0.5 text-[10px] font-bold tracking-wider text-accent backdrop-blur-sm">
-                    #{i + 1}
-                  </span>
-                  <span className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-background via-background/70 to-transparent px-3 pb-2.5 pt-8">
-                    <span className="block truncate text-sm font-semibold text-foreground">
-                      {game.name}
-                    </span>
-                    <span className="text-[10px] uppercase tracking-widest text-muted-foreground">
-                      {game.category === "casino" ? "Casino" : "Instant"}
-                    </span>
-                  </span>
-                </button>
-              ))}
-            </div>
-          </section>
+          {/* Luck rails */}
+          <LuckRail
+            title="ننصحك بتجربة الألعاب"
+            subtitle="Recommended now"
+            luck={90}
+            tone="hot"
+            list={hotGames}
+            endsAt={slot?.endsAt}
+          />
+          <LuckRail
+            title="ألعاب مستقرة"
+            subtitle="Stable games"
+            luck={70}
+            tone="stable"
+            list={stableGames}
+            endsAt={slot?.endsAt}
+          />
 
           {/* Tabs */}
           <nav className="mt-8 px-4">
