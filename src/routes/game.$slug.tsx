@@ -161,24 +161,28 @@ function GamePredictor() {
             <div className="pointer-events-none absolute -left-16 -top-16 h-48 w-48 rounded-full bg-primary/20 blur-[70px]" />
             <div className="pointer-events-none absolute -bottom-16 -right-10 h-48 w-48 rounded-full bg-accent/15 blur-[70px]" />
 
-            <div className="relative flex items-center justify-between">
-              <h2 className="text-xs font-bold uppercase tracking-[0.25em] text-muted-foreground">
-                Prediction
-              </h2>
-              <span className="text-[10px] font-semibold text-muted-foreground" dir="rtl">
-                توقّع الجيم القادم
-              </span>
-            </div>
+            {kind !== "none" && (
+              <>
+                <div className="relative flex items-center justify-between">
+                  <h2 className="text-xs font-bold uppercase tracking-[0.25em] text-muted-foreground">
+                    Prediction
+                  </h2>
+                  <span className="text-[10px] font-semibold text-muted-foreground" dir="rtl">
+                    توقّع الجيم القادم
+                  </span>
+                </div>
 
-            <div
-              className={`relative mt-4 transition-all duration-500 ${
-                prediction ? "opacity-100" : "select-none opacity-40 blur-[6px]"
-              }`}
-            >
-              {(prediction ?? placeholder) && (
-                <Board prediction={(prediction ?? placeholder)!} revealed={prediction !== null} />
-              )}
-            </div>
+                <div
+                  className={`relative mt-4 transition-all duration-500 ${
+                    prediction ? "opacity-100" : "select-none opacity-40 blur-[6px]"
+                  }`}
+                >
+                  {(prediction ?? placeholder) && (
+                    <Board prediction={(prediction ?? placeholder)!} revealed={prediction !== null} />
+                  )}
+                </div>
+              </>
+            )}
 
             {/* Status / CTA */}
             <div className="relative mt-6">
