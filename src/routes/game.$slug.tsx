@@ -1,10 +1,13 @@
 import { Link, createFileRoute, notFound } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 
+import ballAsset from "@/assets/t/ball.png.asset.json";
+import cupAsset from "@/assets/t/cup.png.asset.json";
 import { ParticlesBackground } from "@/components/ParticlesBackground";
 import {
   buildEnterDelayMs,
   buildPrediction,
+  formatEnterTime,
   getGameBySlug,
   getKind,
   type Prediction,
@@ -63,6 +66,11 @@ function GamePredictor() {
   const [enterAt, setEnterAt] = useState<number | null>(null);
   const [total, setTotal] = useState(1);
   const timer = useRef<number | null>(null);
+  const [placeholder, setPlaceholder] = useState<Prediction | null>(null);
+
+  useEffect(() => {
+    setPlaceholder(buildPrediction(kind));
+  }, [kind]);
 
   useEffect(() => {
     if (phase !== "waiting" || enterAt == null) return;
@@ -167,7 +175,9 @@ function GamePredictor() {
                 prediction ? "opacity-100" : "select-none opacity-40 blur-[6px]"
               }`}
             >
-              <Board prediction={prediction ?? buildPlaceholder(kind)} />
+              {(prediction ?? placeholder) && (
+                <Board prediction={(prediction ?? placeholder)!} revealed={prediction !== null} />
+              )}
             </div>
 
             {/* Status / CTA */}
@@ -185,9 +195,15 @@ function GamePredictor() {
               {phase === "waiting" && (
                 <div className="rounded-2xl border border-primary/40 p-5 text-center">
                   <p className="text-[11px] uppercase tracking-[0.25em] text-muted-foreground">
+                    Enter at
+                  </p>
+                  <p className="mt-1 font-mono text-2xl font-extrabold text-accent drop-shadow-[0_0_18px_oklch(0.8_0.18_180/0.6)]">
+                    {enterAt != null ? formatEnterTime(enterAt) : "--:--"}
+                  </p>
+                  <p className="mt-3 text-[11px] uppercase tracking-[0.25em] text-muted-foreground">
                     Next entry in
                   </p>
-                  <p className="mt-2 font-mono text-4xl font-extrabold text-foreground drop-shadow-[0_0_20px_oklch(0.66_0.26_300/0.7)]">
+                  <p className="mt-1 font-mono text-4xl font-extrabold text-foreground drop-shadow-[0_0_20px_oklch(0.66_0.26_300/0.7)]">
                     {fmt(remaining)}
                   </p>
                   <p className="mt-2 text-xs text-muted-foreground" dir="rtl">
@@ -212,6 +228,9 @@ function GamePredictor() {
                   <p className="mt-2 text-xs text-muted-foreground" dir="rtl">
                     دخول الآن على {name} بالتوقع اللي فوق
                   </p>
+                  <p className="mt-1 font-mono text-xs text-accent">
+                    {enterAt != null ? formatEnterTime(enterAt) : ""}
+                  </p>
                   <button
                     type="button"
                     onClick={reset}
@@ -233,9 +252,6 @@ function GamePredictor() {
   );
 }
 
-function buildPlaceholder(kind: ReturnType<typeof getKind>): Prediction {
-  return buildPrediction(kind);
-}
 
 function Stat({ label, value }: { label: string; value: string }) {
   return (
@@ -246,7 +262,7 @@ function Stat({ label, value }: { label: string; value: string }) {
   );
 }
 
-function Board({ prediction }: { prediction: Prediction }) {
+function Board({ prediction, revealed }: { prediction: Prediction; revealed: boolean }) {
   switch (prediction.kind) {
     case "crash":
       return (
@@ -295,25 +311,50 @@ function Board({ prediction }: { prediction: Prediction }) {
 
     case "thimbles":
       return (
-        <div className="grid grid-cols-3 gap-3">
-          {[0, 1, 2].map((i) => {
-            const hit = i === prediction.pick;
-            return (
-              <div
-                key={i}
-                className={`flex aspect-square flex-col items-center justify-center gap-1 rounded-2xl border text-center ${
-                  hit
-                    ? "border-accent bg-accent/10 shadow-[0_0_30px_oklch(0.8_0.18_180/0.55)]"
-                    : "border-border/60 opacity-50"
-                }`}
-              >
-                <span className="text-3xl">{hit ? "🏆" : "🥤"}</span>
-                <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
-                  {hit ? "Pick" : `#${i + 1}`}
-                </span>
-              </div>
-            );
-          })}
+        <div className="rounded-3xl border border-primary/30 bg-background/40 p-4">
+          <div className="grid grid-cols-3 items-end gap-3">
+            {[0, 1, 2].map((i) => {
+              const hit = revealed && i === prediction.pick;
+              return (
+                <div key={i} className="flex flex-col items-center">
+                  <div
+                    className={`relative w-full rounded-2xl px-2 pt-2 transition-all duration-500 ${
+                      hit ? "drop-shadow-[0_0_26px_oklch(0.8_0.18_180/0.7)]" : ""
+                    }`}
+                  >
+                    <img
+                      src={cupAsset.url}
+                      alt={`Thimble cup ${i + 1}`}
+                      width={200}
+                      height={200}
+                      className={`mx-auto h-auto w-full transition-transform duration-500 ${
+                        hit ? "-translate-y-2 scale-105" : "opacity-80"
+                      }`}
+                    />
+                  </div>
+                  <div className="mt-1 h-1 w-full rounded-full bg-gradient-to-r from-transparent via-primary/60 to-transparent" />
+                  <div className="mt-2 flex h-10 items-center justify-center">
+                    {hit ? (
+                      <img
+                        src={ballAsset.url}
+                        alt="Predicted ball position"
+                        width={80}
+                        height={80}
+                        className="h-9 w-9 animate-[pulse-glow_2s_ease-in-out_infinite] drop-shadow-[0_0_18px_oklch(0.8_0.18_180/0.8)]"
+                      />
+                    ) : (
+                      <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+                        #{i + 1}
+                      </span>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+          <p className="mt-2 text-center text-[11px] text-muted-foreground" dir="rtl">
+            الكوبّاية اللي تحتها الكورة هي المتوقّعة
+          </p>
         </div>
       );
 
@@ -374,6 +415,71 @@ function Board({ prediction }: { prediction: Prediction }) {
 
     case "wheel":
       return <Stat label="Predicted segment" value={prediction.segment} />;
+
+    case "swamp":
+      return (
+        <div className="space-y-2 rounded-2xl border border-primary/40 bg-background/40 p-3">
+          {prediction.rows.map((row, r) => (
+            <div key={r} className="flex items-center gap-2">
+              <span className="w-16 shrink-0 rounded-lg border border-accent/40 py-1 text-center text-[10px] font-bold text-accent">
+                {row.multiplier}
+              </span>
+              <div
+                className="grid flex-1 gap-2"
+                style={{ gridTemplateColumns: `repeat(${prediction.cols}, minmax(0, 1fr))` }}
+              >
+                {Array.from({ length: prediction.cols }, (_, c) => {
+                  const safe = c === row.safe;
+                  return (
+                    <div
+                      key={c}
+                      className={`flex aspect-square items-center justify-center rounded-xl border text-lg ${
+                        safe
+                          ? "border-accent bg-accent/10 shadow-[0_0_22px_oklch(0.8_0.18_180/0.5)]"
+                          : "border-border/50 opacity-45"
+                      }`}
+                    >
+                      {safe ? "🐸" : "🍃"}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
+          <p className="pt-1 text-center text-[11px] text-muted-foreground" dir="rtl">
+            الورقة المضيئة في كل صف هي الطريق الآمن
+          </p>
+        </div>
+      );
+
+    case "gems":
+      return (
+        <div>
+          <div
+            className="grid gap-1 rounded-2xl border border-primary/40 bg-background/40 p-2"
+            style={{ gridTemplateColumns: `repeat(${prediction.cols}, minmax(0, 1fr))` }}
+          >
+            {prediction.grid.map((sym, i) => {
+              const hit = prediction.cluster.includes(i);
+              return (
+                <div
+                  key={i}
+                  className={`flex aspect-square items-center justify-center rounded-lg border text-sm ${
+                    hit
+                      ? "border-accent bg-accent/10 shadow-[0_0_18px_oklch(0.8_0.18_180/0.5)]"
+                      : "border-border/40 opacity-40"
+                  }`}
+                >
+                  {sym}
+                </div>
+              );
+            })}
+          </div>
+          <div className="mt-3 grid grid-cols-1 gap-3">
+            <Stat label="Predicted cluster" value={`${prediction.cluster.length} gems`} />
+          </div>
+        </div>
+      );
 
     default:
       return (

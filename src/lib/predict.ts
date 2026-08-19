@@ -1,6 +1,15 @@
 import { games, type Game } from "@/data/games";
 
-export type PredictionKind = "crash" | "dice" | "thimbles" | "mines" | "goal" | "slot" | "wheel";
+export type PredictionKind =
+  | "crash"
+  | "dice"
+  | "thimbles"
+  | "mines"
+  | "goal"
+  | "slot"
+  | "wheel"
+  | "swamp"
+  | "gems";
 
 export function slugify(name: string) {
   return name
@@ -25,6 +34,8 @@ const kindByName: Record<string, PredictionKind> = {
   "Gems & Mines": "mines",
   "Goal!": "goal",
   Goal: "goal",
+  "Swamp Land": "swamp",
+  Crystal: "gems",
 };
 
 export function getKind(name: string): PredictionKind {
@@ -32,6 +43,7 @@ export function getKind(name: string): PredictionKind {
 }
 
 const slotSymbols = ["7", "★", "♦", "♣", "♥", "🔔", "🍒", "💎"];
+const gemSymbols = ["🔷", "🔶", "💎", "❤️", "💚", "💜", "🔺"];
 
 export type Prediction =
   | { kind: "crash"; multiplier: string; safeCashout: string; round: number }
@@ -40,7 +52,9 @@ export type Prediction =
   | { kind: "mines"; safe: number[]; total: number }
   | { kind: "goal"; pick: number; corners: number }
   | { kind: "slot"; reels: string[][]; spins: number; payline: number }
-  | { kind: "wheel"; segment: string };
+  | { kind: "wheel"; segment: string }
+  | { kind: "swamp"; rows: { multiplier: string; safe: number }[]; cols: number }
+  | { kind: "gems"; grid: string[]; cluster: number[]; cols: number };
 
 function rnd(min: number, max: number) {
   return min + Math.random() * (max - min);
@@ -79,6 +93,29 @@ export function buildPrediction(kind: PredictionKind): Prediction {
       return { kind: "goal", pick: Math.floor(rnd(0, 3)), corners: Math.round(rnd(2, 4)) };
     case "wheel":
       return { kind: "wheel", segment: `x${Math.round(rnd(2, 40))}` };
+    case "swamp": {
+      const cols = 5;
+      const mults = [27.16, 5.43, 2.17, 1.3];
+      return {
+        kind: "swamp",
+        cols,
+        rows: mults.map((m) => ({ multiplier: `x${m.toFixed(2)}`, safe: Math.floor(rnd(0, cols)) })),
+      };
+    }
+    case "gems": {
+      const cols = 7;
+      const grid = Array.from(
+        { length: cols * cols },
+        () => gemSymbols[Math.floor(Math.random() * gemSymbols.length)]!,
+      );
+      const start = Math.floor(rnd(0, cols * (cols - 2)));
+      const cluster = [start, start + 1, start + 2, start + cols, start + cols + 1].filter(
+        (n) => n < cols * cols,
+      );
+      const sym = gemSymbols[Math.floor(Math.random() * gemSymbols.length)]!;
+      for (const i of cluster) grid[i] = sym;
+      return { kind: "gems", grid, cluster, cols };
+    }
     default: {
       const reels = Array.from({ length: 3 }, () =>
         Array.from({ length: 3 }, () => slotSymbols[Math.floor(Math.random() * slotSymbols.length)]!),
@@ -91,4 +128,15 @@ export function buildPrediction(kind: PredictionKind): Prediction {
 /** Random enter-game delay: 1–5 minutes from now. */
 export function buildEnterDelayMs() {
   return Math.round(rnd(60_000, 300_000));
+}
+
+/** Exact entry time in 12-hour format, e.g. "7:43:20 PM". */
+export function formatEnterTime(ts: number) {
+  const d = new Date(ts);
+  let h = d.getHours();
+  const ampm = h >= 12 ? "PM" : "AM";
+  h = h % 12 || 12;
+  const mm = String(d.getMinutes()).padStart(2, "0");
+  const ss = String(d.getSeconds()).padStart(2, "0");
+  return `${h}:${mm}:${ss} ${ampm}`;
 }
