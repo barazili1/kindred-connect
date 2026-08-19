@@ -1,9 +1,10 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { Link, createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 
 import logo from "@/assets/casino-ai-logo.png";
 import { ParticlesBackground } from "@/components/ParticlesBackground";
 import { games, type Game } from "@/data/games";
+import { slugify } from "@/lib/predict";
 import { getLuckMap, getLuckSlot, luckShortLabels, type LuckInfo } from "@/lib/luck";
 
 export const Route = createFileRoute("/lobby")({
@@ -243,9 +244,9 @@ function Lobby() {
               {visible.map((game, i) => {
                 const level = isCasino ? luckMap[game.name]?.level : undefined;
                 return (
-                <button
+                <CardShell
                   key={game.name}
-                  type="button"
+                  slug={game.category === "instant" ? slugify(game.name) : undefined}
                   className={`group relative overflow-hidden rounded-2xl border text-left backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 ${
                     !isCasino
                       ? "border-accent/30 hover:border-accent hover:shadow-[0_0_26px_oklch(0.8_0.18_180/0.4)]"
@@ -299,7 +300,7 @@ function Lobby() {
                       </span>
                     </span>
                   </span>
-                </button>
+                </CardShell>
                 );
               })}
             </div>
@@ -313,6 +314,29 @@ function Lobby() {
         </div>
       </main>
     </>
+  );
+}
+
+function CardShell({
+  slug,
+  className,
+  children,
+}: {
+  slug?: string | undefined;
+  className: string;
+  children: React.ReactNode;
+}) {
+  if (slug) {
+    return (
+      <Link to="/game/$slug" params={{ slug }} className={className}>
+        {children}
+      </Link>
+    );
+  }
+  return (
+    <button type="button" className={className}>
+      {children}
+    </button>
   );
 }
 
