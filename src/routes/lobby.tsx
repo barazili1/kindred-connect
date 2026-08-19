@@ -79,10 +79,13 @@ function Lobby() {
   );
 
   const visible = useMemo(() => {
-    const byTab = tab === "all" ? games : games.filter((g) => g.category === tab);
+    const byLuck =
+      filter === "all"
+        ? games
+        : games.filter((g) => luckMap[g.name]?.level === filter);
     const q = query.trim().toLowerCase();
-    return q ? byTab.filter((g) => g.name.toLowerCase().includes(q)) : byTab;
-  }, [tab, query]);
+    return q ? byLuck.filter((g) => g.name.toLowerCase().includes(q)) : byLuck;
+  }, [filter, query, luckMap]);
 
   return (
     <>
