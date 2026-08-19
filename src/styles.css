@@ -159,3 +159,29 @@
     color: var(--color-foreground);
   }
 }
+
+@keyframes rail-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@utility animate-rail {
+  animation: rail-scroll 42s linear infinite;
+  &:hover {
+    animation-play-state: paused;
+  }
+}
+
+@utility rail-mask {
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    black 6%,
+    black 94%,
+    transparent
+  );
+}
