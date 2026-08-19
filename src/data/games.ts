@@ -53,7 +53,7 @@ import g_hamsterRun from "@/assets/g/hamster-run.png.asset.json";
 import g_luckyMines from "@/assets/g/lucky-mines.png.asset.json";
 import g_tower from "@/assets/g/tower.png.asset.json";
 
-export type GameCategory = "casino" | "instant";
+export type GameCategory = "casino";
 
 export type Game = {
   name: string;
