@@ -10,7 +10,6 @@ import {
   formatEnterTime,
   getGameBySlug,
   getKind,
-  
   type Prediction,
 } from "@/lib/predict";
 
