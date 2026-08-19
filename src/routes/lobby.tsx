@@ -201,7 +201,7 @@ function Lobby() {
                   type="button"
                   className={`group relative overflow-hidden rounded-2xl border text-left backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 ${
                     level === "hot"
-                      ? "border-accent/70 shadow-[0_0_26px_oklch(0.8_0.18_180/0.45)] hover:border-accent hover:shadow-[0_0_38px_oklch(0.8_0.18_180/0.65)]"
+                      ? "border-accent shadow-[0_0_0_1px_oklch(0.8_0.18_180/0.6),0_0_26px_oklch(0.8_0.18_180/0.7),0_0_60px_oklch(0.8_0.18_180/0.45)] hover:shadow-[0_0_0_2px_oklch(0.8_0.18_180/0.8),0_0_40px_oklch(0.8_0.18_180/0.9),0_0_90px_oklch(0.8_0.18_180/0.6)]"
                       : level === "stable"
                         ? "border-primary/50 hover:border-primary hover:shadow-[0_0_30px_oklch(0.66_0.26_300/0.45)]"
                         : "border-border hover:border-primary hover:shadow-[0_0_30px_oklch(0.66_0.26_300/0.4)]"
@@ -376,7 +376,7 @@ function LuckRail({
         />
 
         {/* Auto-scrolling rail */}
-        <div className="rail-mask relative -mx-[18px] mt-4 overflow-hidden">
+        <div className="rail-mask rail-scroller relative -mx-[18px] mt-4 overflow-x-auto overflow-y-hidden">
           <div className="animate-rail flex w-max gap-3 px-[18px]">
             {loop.map((game, i) => (
               <span
