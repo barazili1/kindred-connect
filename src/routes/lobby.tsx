@@ -164,21 +164,21 @@ function Lobby() {
             list={stableGames}
           />
 
-          {/* Tabs */}
+          {/* Luck filters */}
           <nav className="mt-8 px-4">
             <div className="flex items-center gap-1 rounded-full border border-border p-1 backdrop-blur-md">
-              {tabs.map((t) => (
+              {filters.map((f) => (
                 <button
-                  key={t.id}
+                  key={f.id}
                   type="button"
-                  onClick={() => setTab(t.id)}
+                  onClick={() => setFilter(f.id)}
                   className={`flex-1 rounded-full px-3 py-2 text-xs font-semibold transition-all ${
-                    tab === t.id
+                    filter === f.id
                       ? "bg-gradient-to-r from-primary to-accent text-primary-foreground shadow-[0_0_20px_oklch(0.66_0.26_300/0.5)]"
                       : "text-muted-foreground hover:text-foreground"
                   }`}
                 >
-                  {t.label}
+                  {f.label}
                 </button>
               ))}
             </div>
