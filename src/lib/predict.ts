@@ -34,6 +34,8 @@ const kindByName: Record<string, PredictionKind> = {
   "Gems & Mines": "mines",
   "Goal!": "goal",
   Goal: "goal",
+  "Swamp Land": "swamp",
+  Crystal: "gems",
 };
 
 export function getKind(name: string): PredictionKind {
@@ -41,6 +43,7 @@ export function getKind(name: string): PredictionKind {
 }
 
 const slotSymbols = ["7", "★", "♦", "♣", "♥", "🔔", "🍒", "💎"];
+const gemSymbols = ["🔷", "🔶", "💎", "❤️", "💚", "💜", "🔺"];
 
 export type Prediction =
   | { kind: "crash"; multiplier: string; safeCashout: string; round: number }
@@ -49,7 +52,9 @@ export type Prediction =
   | { kind: "mines"; safe: number[]; total: number }
   | { kind: "goal"; pick: number; corners: number }
   | { kind: "slot"; reels: string[][]; spins: number; payline: number }
-  | { kind: "wheel"; segment: string };
+  | { kind: "wheel"; segment: string }
+  | { kind: "swamp"; rows: { multiplier: string; safe: number }[]; cols: number }
+  | { kind: "gems"; grid: string[]; cluster: number[]; cols: number };
 
 function rnd(min: number, max: number) {
   return min + Math.random() * (max - min);
