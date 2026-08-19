@@ -216,19 +216,27 @@ function Lobby() {
                     </span>
                   </div>
                   <span className="block px-2.5 py-2">
-                    <span className="flex items-center justify-between gap-2">
-                      <span className="truncate text-xs font-semibold text-card-foreground">
-                        {game.name}
-                      </span>
-                      <span className="shrink-0 rounded-full border border-border px-1.5 py-0.5 text-[9px] uppercase tracking-wider text-muted-foreground">
-                        {game.category === "casino" ? "Casino" : "Instant"}
+                    <span className="block truncate text-xs font-semibold text-card-foreground">
+                      {game.name}
+                    </span>
+                    <span className="mt-1 flex items-center gap-1.5">
+                      <span
+                        className={`h-1.5 w-1.5 shrink-0 rounded-full ${
+                          luckMap[game.name]?.level === "hot"
+                            ? "bg-accent"
+                            : luckMap[game.name]?.level === "stable"
+                              ? "bg-primary"
+                              : "bg-muted-foreground/50"
+                        }`}
+                      />
+                      <span className="truncate text-[9px] text-muted-foreground" dir="rtl">
+                        {luckMap[game.name]
+                          ? luckShortLabels[luckMap[game.name]!.level]
+                          : game.category === "casino"
+                            ? "Casino"
+                            : "Instant"}
                       </span>
                     </span>
-                    {luckMap[game.name] && (
-                      <span className="mt-1.5 block text-[9px] leading-snug text-muted-foreground" dir="rtl">
-                        {luckLabels[luckMap[game.name]!.level]}
-                      </span>
-                    )}
                   </span>
                 </button>
               ))}
