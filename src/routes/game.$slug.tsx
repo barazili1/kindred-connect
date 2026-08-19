@@ -305,25 +305,50 @@ function Board({ prediction, revealed }: { prediction: Prediction; revealed: boo
 
     case "thimbles":
       return (
-        <div className="grid grid-cols-3 gap-3">
-          {[0, 1, 2].map((i) => {
-            const hit = i === prediction.pick;
-            return (
-              <div
-                key={i}
-                className={`flex aspect-square flex-col items-center justify-center gap-1 rounded-2xl border text-center ${
-                  hit
-                    ? "border-accent bg-accent/10 shadow-[0_0_30px_oklch(0.8_0.18_180/0.55)]"
-                    : "border-border/60 opacity-50"
-                }`}
-              >
-                <span className="text-3xl">{hit ? "🏆" : "🥤"}</span>
-                <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
-                  {hit ? "Pick" : `#${i + 1}`}
-                </span>
-              </div>
-            );
-          })}
+        <div className="rounded-3xl border border-primary/30 bg-background/40 p-4">
+          <div className="grid grid-cols-3 items-end gap-3">
+            {[0, 1, 2].map((i) => {
+              const hit = revealed && i === prediction.pick;
+              return (
+                <div key={i} className="flex flex-col items-center">
+                  <div
+                    className={`relative w-full rounded-2xl px-2 pt-2 transition-all duration-500 ${
+                      hit ? "drop-shadow-[0_0_26px_oklch(0.8_0.18_180/0.7)]" : ""
+                    }`}
+                  >
+                    <img
+                      src={cupAsset.url}
+                      alt={`Thimble cup ${i + 1}`}
+                      width={200}
+                      height={200}
+                      className={`mx-auto h-auto w-full transition-transform duration-500 ${
+                        hit ? "-translate-y-2 scale-105" : "opacity-80"
+                      }`}
+                    />
+                  </div>
+                  <div className="mt-1 h-1 w-full rounded-full bg-gradient-to-r from-transparent via-primary/60 to-transparent" />
+                  <div className="mt-2 flex h-10 items-center justify-center">
+                    {hit ? (
+                      <img
+                        src={ballAsset.url}
+                        alt="Predicted ball position"
+                        width={80}
+                        height={80}
+                        className="h-9 w-9 animate-[pulse-glow_2s_ease-in-out_infinite] drop-shadow-[0_0_18px_oklch(0.8_0.18_180/0.8)]"
+                      />
+                    ) : (
+                      <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+                        #{i + 1}
+                      </span>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+          <p className="mt-2 text-center text-[11px] text-muted-foreground" dir="rtl">
+            الكوبّاية اللي تحتها الكورة هي المتوقّعة
+          </p>
         </div>
       );
 
