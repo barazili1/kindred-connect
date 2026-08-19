@@ -93,7 +93,11 @@ function Lobby() {
           ? source
           : source.filter((g) => luckMap[g.name]?.level === luckFilter);
     const q = query.trim().toLowerCase();
-    return q ? byLuck.filter((g) => g.name.toLowerCase().includes(q)) : byLuck;
+    return q
+      ? byLuck.filter(
+          (g) => g.name.toLowerCase().includes(q) || arabicName(g.name).includes(query.trim()),
+        )
+      : byLuck;
   }, [topCategory, luckFilter, query, luckMap]);
 
   const isCasino = topCategory === "casino";
