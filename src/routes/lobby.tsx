@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import logo from "@/assets/casino-ai-logo.png";
 import { ParticlesBackground } from "@/components/ParticlesBackground";
 import { games, type Game } from "@/data/games";
-import { slugify } from "@/lib/predict";
+import { arabicName, slugify } from "@/lib/predict";
 import { getLuckMap, getLuckSlot, luckShortLabels, type LuckInfo } from "@/lib/luck";
 
 export const Route = createFileRoute("/lobby")({
