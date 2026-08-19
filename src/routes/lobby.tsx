@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 
 import logo from "@/assets/casino-ai-logo.png";
 import { ParticlesBackground } from "@/components/ParticlesBackground";
-import { games, type Game, type GameCategory } from "@/data/games";
+import { games, type Game } from "@/data/games";
 import { getLuckMap, getLuckSlot, luckShortLabels, type LuckInfo } from "@/lib/luck";
 
 export const Route = createFileRoute("/lobby")({
@@ -27,16 +27,17 @@ export const Route = createFileRoute("/lobby")({
   component: Lobby,
 });
 
-type Tab = "all" | GameCategory;
+type LuckFilter = "all" | "hot" | "stable" | "unstable";
 
-const tabs: { id: Tab; label: string }[] = [
+const filters: { id: LuckFilter; label: string }[] = [
   { id: "all", label: "All games" },
-  { id: "casino", label: "Casino games" },
-  { id: "instant", label: "Instant games" },
+  { id: "hot", label: "Recommended" },
+  { id: "stable", label: "Stable" },
+  { id: "unstable", label: "Unstable" },
 ];
 
 function Lobby() {
-  const [tab, setTab] = useState<Tab>("all");
+  const [filter, setFilter] = useState<LuckFilter>("all");
   const [query, setQuery] = useState("");
   const [usersOnline, setUsersOnline] = useState(2417);
 
@@ -78,10 +79,13 @@ function Lobby() {
   );
 
   const visible = useMemo(() => {
-    const byTab = tab === "all" ? games : games.filter((g) => g.category === tab);
+    const byLuck =
+      filter === "all"
+        ? games
+        : games.filter((g) => luckMap[g.name]?.level === filter);
     const q = query.trim().toLowerCase();
-    return q ? byTab.filter((g) => g.name.toLowerCase().includes(q)) : byTab;
-  }, [tab, query]);
+    return q ? byLuck.filter((g) => g.name.toLowerCase().includes(q)) : byLuck;
+  }, [filter, query, luckMap]);
 
   return (
     <>
@@ -160,21 +164,21 @@ function Lobby() {
             list={stableGames}
           />
 
-          {/* Tabs */}
+          {/* Luck filters */}
           <nav className="mt-8 px-4">
             <div className="flex items-center gap-1 rounded-full border border-border p-1 backdrop-blur-md">
-              {tabs.map((t) => (
+              {filters.map((f) => (
                 <button
-                  key={t.id}
+                  key={f.id}
                   type="button"
-                  onClick={() => setTab(t.id)}
+                  onClick={() => setFilter(f.id)}
                   className={`flex-1 rounded-full px-3 py-2 text-xs font-semibold transition-all ${
-                    tab === t.id
+                    filter === f.id
                       ? "bg-gradient-to-r from-primary to-accent text-primary-foreground shadow-[0_0_20px_oklch(0.66_0.26_300/0.5)]"
                       : "text-muted-foreground hover:text-foreground"
                   }`}
                 >
-                  {t.label}
+                  {f.label}
                 </button>
               ))}
             </div>
@@ -186,7 +190,7 @@ function Lobby() {
               <div className="flex items-center gap-2">
                 <span className="h-4 w-1 rounded-full bg-gradient-to-b from-accent to-primary" />
                 <h2 className="text-sm font-bold uppercase tracking-widest text-foreground">
-                  {tabs.find((t) => t.id === tab)?.label}
+                  {filters.find((f) => f.id === filter)?.label}
                 </h2>
               </div>
               <span className="text-xs text-muted-foreground">{visible.length} games</span>
