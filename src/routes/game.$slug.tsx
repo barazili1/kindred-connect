@@ -256,7 +256,7 @@ function Stat({ label, value }: { label: string; value: string }) {
   );
 }
 
-function Board({ prediction }: { prediction: Prediction }) {
+function Board({ prediction, revealed }: { prediction: Prediction; revealed: boolean }) {
   switch (prediction.kind) {
     case "crash":
       return (
