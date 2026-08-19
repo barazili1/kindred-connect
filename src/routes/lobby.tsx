@@ -247,7 +247,8 @@ function Lobby() {
                     </span>
                   </span>
                 </button>
-              ))}
+                );
+              })}
             </div>
 
             {visible.length === 0 && (
